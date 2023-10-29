@@ -4,7 +4,6 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 
 import java.awt.image.BufferedImage;
-
 import java.awt.Color;
 import java.awt.Dimension;
 
@@ -34,6 +33,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public int currentMap = 0;
 	public final int worldWidth = maxWorldCol * tileSize;
 	public final int worldHeight = maxWorldRow  * tileSize;
+	
 	// FOR FULL SCREEN
 	int screenWidth2 = screenWidth;
 	int screenHeight2 = screenHeight;
@@ -53,6 +53,9 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	KeyHandler keyH = new KeyHandler(this);
 		
+	
+	int tempo;
+	int tempoDaley = 6;
 	
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -93,7 +96,7 @@ public class GamePanel extends JPanel implements Runnable {
 		long lastTime = System.nanoTime();
 		long currentTime = 0;
 		long timer = 0;
-		int drawCount = 0;
+		//int drawCount = 0;
 		
 		while (gameThread!=null) {
 			currentTime = System.nanoTime();
@@ -106,28 +109,44 @@ public class GamePanel extends JPanel implements Runnable {
 				drawToTempScreen(); // draw everything to the buffered image
 				drawToScreen(); // draw the buffered image to the screen
 				delta--;
-				drawCount++;
+				//drawCount++;
 			}
 			if (timer >= 1000000000) {
 				//System.out.println("FPS: " + drawCount);
-				drawCount = 0;
+				//drawCount = 0;
 				timer = 0;
 			}
 		}
 	}
 	public void update() {
 		
+		tempo ++;
+		
 		if (keyH.upPressed) {
-			playerY -= 2;
+			if (tempo>=tempoDaley) {
+				playerY -= tileSize;
+				tempo=0;
+			}
+			
 		}
 		if (keyH.downPressed) {
-			playerY += 2;
+			if (tempo>=tempoDaley) {
+				playerY += tileSize;
+				tempo=0;
+			}
 		}
 		if (keyH.leftPressed) {
-			playerX -= 2;
+			if (tempo>=tempoDaley) {
+				playerX -= tileSize;
+				tempo=0;
+			}
+			
 		}
 		if (keyH.rightPressed) {
-			playerX += 2;
+			if (tempo>=tempoDaley) {
+				playerX += tileSize;
+				tempo=0;
+			}			
 		}
 		
 	}
