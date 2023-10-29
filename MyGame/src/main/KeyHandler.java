@@ -9,22 +9,14 @@ public class KeyHandler implements KeyListener {
 	public KeyHandler(GamePanel gp) {
 		this.gp = gp;
 	}
-	public boolean upPressed, downPressed, leftPressed, rightPressed, enterPressed, shotKeyPressed;
 	
-	// DEBUG
-	public boolean checkDrawTime = false;
+	public boolean upPressed, downPressed, leftPressed, rightPressed;
 
-	public void keyTyped(KeyEvent e) {
-	
-		
-	}
+	public void keyTyped(KeyEvent e) {}
 
 	public void keyPressed(KeyEvent e) {
-		
 		int code = e.getKeyCode();
-	
-			playState(code);							
-		
+		playState(code);							
 	}
 
 	public void playState(int code) {
@@ -42,6 +34,5 @@ public class KeyHandler implements KeyListener {
 		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {upPressed=false;}
 		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {rightPressed=false;}
 		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {downPressed=false;}
-		if (code == KeyEvent.VK_F) {shotKeyPressed=false;}	
 	}
 }

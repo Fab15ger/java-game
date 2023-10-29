@@ -4,12 +4,16 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.awt.Color;
 import java.awt.Dimension;
 
 import java.awt.Graphics;
 
 import javax.swing.JPanel;
+
+import entity.Entity;
+import entity.Player;
 
 
 
@@ -47,15 +51,10 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	// SYSTEM
 	Thread gameThread;
+	public KeyHandler keyH = new KeyHandler(this);
 	
-	int playerX = 100;
-	int playerY = 100;
-	
-	KeyHandler keyH = new KeyHandler(this);
-		
-	
-	int tempo;
-	int tempoDaley = 6;
+	Player player = new Player(this, keyH);
+	ArrayList<Entity> entityList = new ArrayList<>();
 	
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -90,13 +89,14 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 	@Override
 	public void run() {
+
 		
 		double drawInterval = 1000000000 / FPS;
 		double delta = 0;
 		long lastTime = System.nanoTime();
 		long currentTime = 0;
 		long timer = 0;
-		//int drawCount = 0;
+		int drawCount = 0;
 		
 		while (gameThread!=null) {
 			currentTime = System.nanoTime();
@@ -109,45 +109,24 @@ public class GamePanel extends JPanel implements Runnable {
 				drawToTempScreen(); // draw everything to the buffered image
 				drawToScreen(); // draw the buffered image to the screen
 				delta--;
-				//drawCount++;
+				drawCount++;
 			}
 			if (timer >= 1000000000) {
-				//System.out.println("FPS: " + drawCount);
-				//drawCount = 0;
+				System.out.println("FPS: " + drawCount);
+				drawCount = 0;
 				timer = 0;
 			}
 		}
 	}
 	public void update() {
 		
-		tempo ++;
+		player.update();
 		
-		if (keyH.upPressed) {
-			if (tempo>=tempoDaley) {
-				playerY -= tileSize;
-				tempo=0;
-			}
-			
-		}
-		if (keyH.downPressed) {
-			if (tempo>=tempoDaley) {
-				playerY += tileSize;
-				tempo=0;
-			}
-		}
-		if (keyH.leftPressed) {
-			if (tempo>=tempoDaley) {
-				playerX -= tileSize;
-				tempo=0;
-			}
-			
-		}
-		if (keyH.rightPressed) {
-			if (tempo>=tempoDaley) {
-				playerX += tileSize;
-				tempo=0;
-			}			
-		}
+		//for (int i = 0; i < entityList.size(); i++) {
+		//		entityList.get(i).update();
+		//	}
+		//}
+		
 		
 	}
 	public void drawToTempScreen() {
@@ -155,8 +134,15 @@ public class GamePanel extends JPanel implements Runnable {
 		g2.setColor(Color.black);
 		g2.fillRect(0, 0, screenWidth, screenHeight);
 		
-		g2.setColor(Color.white);
-		g2.fillRect(playerX, playerY, 50, 50);
+		entityList.add(player);
+		
+		for (int i = 0; i < entityList.size(); i++) {
+			if (entityList.get(i) != null) {
+				entityList.get(i).draw(g2);
+			}		
+		}
+		
+		
 	}
 	public void drawToScreen() {
 		Graphics g = getGraphics();
