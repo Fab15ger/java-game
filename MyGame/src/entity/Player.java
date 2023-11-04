@@ -9,18 +9,26 @@ import main.KeyHandler;
 public class Player extends Entity{
 
 	KeyHandler keyH;
+	public final int screenX;
+	public final int screenY;
 	
 	public Player(GamePanel gp, KeyHandler keyH) {
 		super(gp);
 		this.gp = gp;
 		this.keyH = keyH;
+		
+		image = setup("/tile/004", gp.tileSize, gp.tileSize);
+		
+		screenX = gp.screenWidth/2 - (gp.tileSize/2);
+		screenY = gp.screenHeight/2 - (gp.tileSize/2);
+		
 		setDefaultValues();
 		
 	}
 	
 	public void setDefaultValues() {
-		worldX = 0;
-		worldY = 0;
+		worldX = 10*gp.tileSize;
+		worldY = 8*gp.tileSize;
 		speed = 3;
 	}
 	
@@ -44,10 +52,7 @@ public class Player extends Entity{
 	}
 	
 	public void draw(Graphics2D g2) {
-
-		g2.setColor(Color.white);
-		g2.fillRect(worldX, worldY, gp.tileSize, gp.tileSize);
-		
+		g2.fillRect(screenX, screenY, gp.tileSize, gp.tileSize);
 	}
 
 }

@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 
 import entity.Entity;
 import entity.Player;
+import tile.TileManager;
 
 
 
@@ -31,8 +32,8 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int screenHeight = maxSreenRow * tileSize; // 576 pixels
 	
 	//WORLD SETTINGS
-	public final int maxWorldCol = 50;
-	public final int maxWorldRow = 50;
+	public final int maxWorldCol = 250;
+	public final int maxWorldRow = 250;
 	public final int maxMap = 10;
 	public int currentMap = 0;
 	public final int worldWidth = maxWorldCol * tileSize;
@@ -48,12 +49,12 @@ public class GamePanel extends JPanel implements Runnable {
 	//FPS
 	private int FPS = 60;
 	
-	
 	// SYSTEM
 	Thread gameThread;
+	public TileManager tileM = new TileManager(this);
 	public KeyHandler keyH = new KeyHandler(this);
 	
-	Player player = new Player(this, keyH);
+	public Player player = new Player(this, keyH);
 	ArrayList<Entity> entityList = new ArrayList<>();
 	
 	public GamePanel() {
@@ -70,18 +71,6 @@ public class GamePanel extends JPanel implements Runnable {
 		tempScreen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
 		g2 = (Graphics2D)tempScreen.getGraphics();
 
-	}
-
-	public void setFullScreen() {
-		
-		// GET LOCAL SCREEN DEVICE
-		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		GraphicsDevice gd = ge.getDefaultScreenDevice();
-		gd.setFullScreenWindow(Main.window);
-		
-		// GET FULLSCREEN WIDTH AND HEGHT
-		screenWidth2 = Main.window.getWidth();
-		screenHeight2 = Main.window.getHeight();
 	}
 	public void startGameThread() {
 		gameThread = new Thread(this);
@@ -118,21 +107,15 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 		}
 	}
-	public void update() {
-		
-		player.update();
-		
-		//for (int i = 0; i < entityList.size(); i++) {
-		//		entityList.get(i).update();
-		//	}
-		//}
-		
-		
+	public void update() {		
+		player.update();		
 	}
 	public void drawToTempScreen() {
 		
-		g2.setColor(Color.black);
-		g2.fillRect(0, 0, screenWidth, screenHeight);
+		//g2.setColor(Color.black);
+		//g2.fillRect(0, 0, screenWidth, screenHeight);
+		
+		tileM.draw(g2);
 		
 		entityList.add(player);
 		
