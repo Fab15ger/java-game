@@ -10,7 +10,7 @@ public class KeyHandler implements KeyListener {
 		this.gp = gp;
 	}
 	
-	public boolean upPressed, downPressed, leftPressed, rightPressed;
+	public boolean upPressed, downPressed, leftPressed, rightPressed, nortWest,southWest, nortEast, southEast;
 
 	public void keyTyped(KeyEvent e) {}
 
@@ -20,19 +20,26 @@ public class KeyHandler implements KeyListener {
 	}
 
 	public void playState(int code) {
-		if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {leftPressed=true;}
-		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {upPressed=true;	}
-		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {rightPressed=true;}
-		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {downPressed=true;}
-
+		if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT || code == KeyEvent.VK_NUMPAD4) {leftPressed=true;}
+		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP || code == KeyEvent.VK_NUMPAD8) {upPressed=true;}
+		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT || code == KeyEvent.VK_NUMPAD6) {rightPressed=true;}
+		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN || code == KeyEvent.VK_NUMPAD2) {downPressed=true;}
+		if (code == KeyEvent.VK_NUMPAD9) {nortWest=true;}
+		if (code == KeyEvent.VK_NUMPAD7) {nortEast=true;}
+		if (code == KeyEvent.VK_NUMPAD3) {southWest=true;}
+		if (code == KeyEvent.VK_NUMPAD1) {southEast=true;}
 	}
 	
 	@Override
 	public void keyReleased(KeyEvent e) {
 		int code = e.getKeyCode();
-		if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {leftPressed=false;}
-		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {upPressed=false;}
-		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {rightPressed=false;}
-		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {downPressed=false;}
+		if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT || code == KeyEvent.VK_NUMPAD4) {leftPressed=false;}
+		if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP || code == KeyEvent.VK_NUMPAD8) {upPressed=false;}
+		if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT || code == KeyEvent.VK_NUMPAD6) {rightPressed=false;}
+		if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN || code == KeyEvent.VK_NUMPAD2) {downPressed=false;}
+		if (code == KeyEvent.VK_NUMPAD9) {nortWest=false;}
+		if (code == KeyEvent.VK_NUMPAD7) {nortEast=false;}
+		if (code == KeyEvent.VK_NUMPAD3) {southWest=false;}
+		if (code == KeyEvent.VK_NUMPAD1) {southEast=false;}
 	}
 }

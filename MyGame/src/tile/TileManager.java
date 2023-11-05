@@ -67,10 +67,10 @@ public class TileManager {
 		setup(25, "025", true);//water
 		setup(26, "026", true);//water
 		setup(27, "027", true);//water
-		setup(28, "028", false);
-		setup(29, "029", false);
-		setup(30, "030", false);
-		setup(31, "031", false);
+		setup(28, "028", true);
+		setup(29, "029", true);
+		setup(30, "030", true);
+		setup(31, "031", true);
 		setup(32, "032", true);// WALL
 		
 		setup(40, "032", true);// WALL

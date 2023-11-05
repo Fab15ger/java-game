@@ -1,6 +1,7 @@
 package entity;
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -12,15 +13,17 @@ import main.UtilityTool;
 public class Entity {
 	
 	GamePanel gp;
-	
+	public boolean collisionOn = false;
 	public BufferedImage image;
 	public int worldX;
 	public int worldY;
 	String name;
 	int tempo = 0;
 	int tempoDelay;
-	String direction = "down";
-	int speed;
+	public String direction = "down";
+	public int delaySpeed;
+	public int speed;
+	public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
 	
 	public Entity(GamePanel gp) {
 		this.gp = gp;
