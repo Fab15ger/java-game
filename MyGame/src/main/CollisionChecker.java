@@ -61,7 +61,6 @@ public class CollisionChecker {
 		case "nortwest":
 			x = (entity.worldX+gp.tileSize) / gp.tileSize;
 			y = (entity.worldY-gp.tileSize) / gp.tileSize;
-
 			tileNum1 = gp.tileM.mapTileNum[gp.currentMap][x][y];		
 			if (gp.tileM.tile[tileNum1].collision == true) {
 				entity.collisionOn = true;
@@ -70,7 +69,6 @@ public class CollisionChecker {
 		case "norteast":
 			x = (entity.worldX-gp.tileSize) / gp.tileSize;
 			y = (entity.worldY-gp.tileSize) / gp.tileSize;
-
 			tileNum1 = gp.tileM.mapTileNum[gp.currentMap][x][y];		
 			if (gp.tileM.tile[tileNum1].collision == true) {
 				entity.collisionOn = true;
@@ -79,7 +77,6 @@ public class CollisionChecker {
 		case "southwest":
 			x = (entity.worldX+gp.tileSize) / gp.tileSize;
 			y = (entity.worldY+gp.tileSize) / gp.tileSize;
-
 			tileNum1 = gp.tileM.mapTileNum[gp.currentMap][x][y];		
 			if (gp.tileM.tile[tileNum1].collision == true) {
 				entity.collisionOn = true;
@@ -88,7 +85,6 @@ public class CollisionChecker {
 		case "southeast":
 			x = (entity.worldX-gp.tileSize) / gp.tileSize;
 			y = (entity.worldY+gp.tileSize) / gp.tileSize;
-
 			tileNum1 = gp.tileM.mapTileNum[gp.currentMap][x][y];		
 			if (gp.tileM.tile[tileNum1].collision == true) {
 				entity.collisionOn = true;
