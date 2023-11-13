@@ -10,7 +10,9 @@ public class KeyHandler implements KeyListener {
 		this.gp = gp;
 	}
 	
-	public boolean upPressed, downPressed, leftPressed, rightPressed, nortWest,southWest, nortEast, southEast;
+	public boolean upPressed, downPressed, leftPressed, rightPressed, nortWest,southWest, nortEast, southEast, shootPressesd;
+	
+	boolean debug = false;
 
 	public void keyTyped(KeyEvent e) {}
 
@@ -28,6 +30,13 @@ public class KeyHandler implements KeyListener {
 		if (code == KeyEvent.VK_NUMPAD7) {nortEast=true;}
 		if (code == KeyEvent.VK_NUMPAD3) {southWest=true;}
 		if (code == KeyEvent.VK_NUMPAD1) {southEast=true;}
+		
+		if (code == KeyEvent.VK_NUMPAD5) {
+			shootPressesd = true;
+		}
+		
+		if (code == KeyEvent.VK_C) {debug=true;}
+	
 	}
 	
 	@Override

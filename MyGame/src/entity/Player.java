@@ -1,17 +1,18 @@
 package entity;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import main.GamePanel;
 import main.KeyHandler;
+import object.OBJ_Fireball;
 
 public class Player extends Entity{
 
 	KeyHandler keyH;
 	public final int screenX;
 	public final int screenY;
+	public int mx, my;
 	
 	public Player(GamePanel gp, KeyHandler keyH) {
 		super(gp);
@@ -26,8 +27,8 @@ public class Player extends Entity{
 		
 		setDefaultValues();
 		
-		
-		
+		projectile = new OBJ_Fireball(gp);
+		shotAvalableCounter = 30;
 	}
 	
 	public void getPlayerImage() {		
@@ -54,12 +55,21 @@ public class Player extends Entity{
 		solidArea.height = 46;
 		solidArea.width = 46;
 		
+
+		
 		worldX = 11*gp.tileSize;
 		worldY = 7*gp.tileSize;
-		speed = 8;
+		
+		speed = 12;
+		
+		target = gp.m1;
+		projectile = new OBJ_Fireball(gp);		
 	}
 	
 	public void update() {
+		
+		col = (worldX)/gp.tileSize;
+		row = (worldY)/gp.tileSize;
 
 		if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed
 				|| keyH.nortWest || keyH.southWest || keyH.nortEast || keyH.southEast) {
@@ -88,7 +98,8 @@ public class Player extends Entity{
 						case "nortwest": worldY -= gp.tileSize; worldX += gp.tileSize; image = right1; break;
 						case "norteast": worldY -= gp.tileSize; worldX -= gp.tileSize; image = left1; break;
 						case "southwest": worldY += gp.tileSize; worldX += gp.tileSize; image = right1; break;
-						case "southeast": worldY += gp.tileSize; worldX -= gp.tileSize; image = left1; break;										
+						case "southeast": worldY += gp.tileSize; worldX -= gp.tileSize; image = left1; break;	
+						
 					}
 				}
 				delaySpeed=0;
@@ -109,6 +120,38 @@ public class Player extends Entity{
 				standCounter = 0;
 			}
 		}
+		
+		if (gp.keyH.shootPressesd && !projectile.alive) {
+			
+			gp.keyH.shootPressesd = false;
+			
+	        //double angle = 0;
+	        //int px = 0;
+	        //int py = 0;	        
+	        //mx = (target.worldX) + (gp.tileSize/2);
+	        //my = target.worldY + (gp.tileSize/2);
+	        //angle = Math.atan2(my - (worldY+ (gp.tileSize/2)), mx - (worldX+ (gp.tileSize/2)));                   
+	        //double dx = Math.cos(angle);
+	        //double dy = Math.sin(angle);
+			
+			
+			projectile.set(worldX, worldY, direction, true, this, dx, dy, target);
+			// SUBTRACT THIS COST (MANA, AMMO ETC.)
+			projectile.subtractResource(this);
+			
+			
+			// CHECK VACANCY
+			for (int i = 0; i < gp.projectile[1].length; i++) {
+				gp.projectile[gp.currentMap][i] = null;
+				gp.projectile[gp.currentMap][i] = projectile;
+				break;
+				
+			}
+
+			// ADD IT TO THE LIST
+			shotAvalableCounter --;			
+		}
+
 	}
 	
 	public void draw(Graphics2D g2) {
@@ -179,5 +222,6 @@ public class Player extends Entity{
 			
 		g2.drawImage(image, screenX, screenY, null);
 	}
+
 
 }

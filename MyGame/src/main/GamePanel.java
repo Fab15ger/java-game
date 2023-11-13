@@ -5,14 +5,17 @@ import java.awt.GraphicsEnvironment;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.awt.Color;
 import java.awt.Dimension;
-
+import java.awt.Font;
 import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
 import entity.Entity;
+import entity.Mob1;
 import entity.Player;
 import tile.TileManager;
 
@@ -55,8 +58,11 @@ public class GamePanel extends JPanel implements Runnable {
 	public TileManager tileM = new TileManager(this);
 	public KeyHandler keyH = new KeyHandler(this);
 	
+	//public Rune_SD sd;
+	public Mob1 m1 = new Mob1(this);
 	public Player player = new Player(this, keyH);
-	ArrayList<Entity> entityList = new ArrayList<>();
+	public Entity projectile[][] = new Entity[maxMap][20];
+	public ArrayList<Entity> entityList = new ArrayList<>();
 	
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -102,14 +108,29 @@ public class GamePanel extends JPanel implements Runnable {
 				drawCount++;
 			}
 			if (timer >= 1000000000) {
-				//System.out.println("FPS: " + drawCount);
+				System.out.println("FPS: " + drawCount);
+
 				drawCount = 0;
 				timer = 0;
 			}
 		}
 	}
 	public void update() {		
-		player.update();		
+		m1.update();
+		player.update();
+		
+		for (int i = 0; i < projectile[1].length; i++) {
+			if (projectile[currentMap][i] != null) {
+				if (projectile[currentMap][i].alive) {
+					projectile[currentMap][i].update();
+				}
+				if (!projectile[currentMap][i].alive) {
+					projectile[currentMap][i] = null;
+				}
+				
+			}
+		}
+		
 	}
 	public void drawToTempScreen() {
 		
@@ -118,17 +139,55 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		tileM.draw(g2);
 		
-		entityList.add(player);
 		
-		for (int i = 0; i < entityList.size(); i++) {
-			if (entityList.get(i) != null) {
-				entityList.get(i).draw(g2);
-			}		
+		entityList.add(player);
+		entityList.add(m1);
+		
+		for (int i = 0; i < projectile[1].length; i++) {
+			if (projectile[currentMap][i] != null) {
+				entityList.add(projectile[currentMap][i]);
+			}
 		}
 		
+		// SORT
+		Collections.sort(entityList, new Comparator<Entity>() {
+			
+			@Override
+			public int compare(Entity e1, Entity e2) {
+				int result = Integer.compare(e1.worldY, e2.worldY);
+				return result;
+			}
+		});
+		
+		// DRAW ENTITIES
+		for (int i = 0; i < entityList.size(); i++) {
+			entityList.get(i).draw(g2);
+		}
 		// EMPTY ENTITY LIST
 		entityList.clear();
-		
+		// DEBUG
+		if (keyH.debug==true) {
+			//long drawEnd = System.nanoTime();
+			//long passed = drawEnd - drawStart;
+												
+			g2.setColor(Color.white);
+			g2.setFont(new Font("Arial", Font.PLAIN, 20));
+			int x = 10;
+			int y = 400;
+			int lineHeight = 20;
+			
+			g2.drawString("WorldX: " + player.worldX, x, y); y += lineHeight;
+			g2.drawString("WorldY: " + player.worldY, x, y); y += lineHeight;
+			g2.drawString("Col: " + player.col, x, y); y += lineHeight;
+			g2.drawString("Row: " + player.row,x, y); y += lineHeight;
+			g2.drawString("Sd Col: " + player.projectile.col, x, y); y += lineHeight;
+			g2.drawString("sd Row: " + player.projectile.row,x, y); y += lineHeight;
+			
+			g2.drawString("enemy Col: " + player.target.col, x, y); y += lineHeight;
+			g2.drawString("enemy Row: " + player.target.row,x, y); y += lineHeight;
+			//g2.drawString("Draw time: " + passed, 10, 380);
+			//System.out.println("Draw time: " + passed);
+		}
 		
 	}
 	public void drawToScreen() {
