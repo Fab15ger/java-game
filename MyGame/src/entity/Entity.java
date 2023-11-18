@@ -33,6 +33,7 @@ public class Entity {
 	public int mx, my;
 	public Entity target;
 	public Projectile projectile;
+	public Projectile dmg_energy;
 	String name;
 	int tempo = 0;
 	int tempoDelay;
@@ -45,8 +46,24 @@ public class Entity {
 	public Rectangle solidArea = new Rectangle(48,48,48,48);
 	boolean explosion = false;
 	boolean efectDmgReceive = false;
+	public int delay_hit;
+	public int counterHit = 0;
+	public int level;
+	public int magic;
 	
+	public int actionLockCounter;
 	
+	public int atkNumber = 0;
+	
+	public int attack_type;
+	public int ATK_PHYSIC = 0;
+	public int ATK_FIRE = 1;
+	public int ATK_ICE = 2;
+	public int ATK_EARTH = 3;
+	public int ATK_DEATH = 4;
+	public int ATK_HOLLY = 5;
+	public int ATK_ENERGY = 6;
+
 	public Entity(GamePanel gp) {
 		this.gp = gp;
 		
@@ -87,18 +104,6 @@ public class Entity {
 	
 	public void update() {
 		
-//		switch(direction) {
-//			case "up":worldY -= this.speed;break;
-//			case "down":worldY += this.speed;break;
-//			case "left":worldX -= this.speed;break;
-//			case "right":worldX += this.speed;break;
-//			
-//			case "nortwest": direction = "left";break;
-//			case "norteast": direction = "right";break;
-//			case "southwest": direction = "left";break;
-//			case "southeast": direction = "right";break;
-//		}
-		
 		spriteCounter++;
 		if (spriteCounter>=24) {
 			if (spriteNum==1) {
@@ -107,10 +112,6 @@ public class Entity {
 				spriteNum =1;
 			}
 			spriteCounter=0;
-		}
-		
-		if (shotAvalableCounter < 30) {
-			shotAvalableCounter++;
 		}
 		
 		if (efectDmgReceive) {
@@ -132,7 +133,6 @@ public class Entity {
 					efectDmgReceive = false;
 				}
 				spriteCounterBlood = 0;
-			
 			}
 		}
 	}
@@ -193,28 +193,19 @@ public class Entity {
 					if (spriteNum == 2) {image = left2;}
 					break;
 				}
-		
-		//g2.drawImage(image, screenX, screenY, null);
-		if (alive) {
-			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+
+			if (alive) {
+				g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+			}
 		}
-		
-		}
-		
 		
 		if (efectDmgReceive) {
-			
 			if (spriteNumBlood == 1) {image_efect_dmg = animBlood1;}
 			if (spriteNumBlood == 2) {image_efect_dmg = animBlood2;}
 			if (spriteNumBlood == 3) {image_efect_dmg = animBlood3;}
 			if (spriteNumBlood == 4) {image_efect_dmg = animBlood4;}
 			if (spriteNumBlood == 5) {image_efect_dmg = animBlood5;}
-			
 			g2.drawImage(image_efect_dmg, screenX, screenY, gp.tileSize, gp.tileSize, null);
 		}
-
-		//g2.fillRect(screenX, screenY, gp.tileSize, gp.tileSize);
-
 	}
-
 }

@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -14,9 +15,11 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
+import ELements.Fields;
 import entity.Entity;
 import entity.Mob1;
 import entity.Player;
+import items.Item;
 import tile.TileManager;
 
 
@@ -59,17 +62,25 @@ public class GamePanel extends JPanel implements Runnable {
 	public KeyHandler keyH = new KeyHandler(this);
 	
 	//public Rune_SD sd;
+	//public Item i1 = new Item(this);
 	public Mob1 m1 = new Mob1(this);
-	public Player player = new Player(this, keyH);
-	public Entity projectile[][] = new Entity[maxMap][20];
-	public ArrayList<Entity> entityList = new ArrayList<>();
+	//public Fields f1 = new Fields(this);
+
+	public Entity projectile[][] = new Entity[maxMap][200];
+	public Fields fields[][] = new Fields[maxMap][10];
 	
+	public ArrayList<Entity> entityList = new ArrayList<>();
+	public ArrayList<Fields> fieldsList = new ArrayList<>(); 
+	public Player player = new Player(this, keyH);
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
 		this.setBackground(Color.black);
 		this.setDoubleBuffered(true);
 		this.setFocusable(true);
 		this.addKeyListener(keyH);
+		
+		entityList.add(player);
+		entityList.add(m1);
 	}
 	
 	// SETUP GAME
@@ -108,15 +119,18 @@ public class GamePanel extends JPanel implements Runnable {
 				drawCount++;
 			}
 			if (timer >= 1000000000) {
-				System.out.println("FPS: " + drawCount);
-
+				//System.out.println("FPS: " + drawCount);
+				//System.out.println("" + entityList.size());
 				drawCount = 0;
 				timer = 0;
 			}
 		}
 	}
-	public void update() {		
+	public void update() {
+		//i1.update();
+		//f1.update();
 		m1.update();
+		m1.setAction();
 		player.update();
 		
 		for (int i = 0; i < projectile[1].length; i++) {
@@ -131,22 +145,36 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 		}
 		
+		for (int i = 0; i < fields[1].length; i++) {			
+			if (fields[currentMap][i] != null) {				
+				fields[currentMap][i].update();				
+			}
+		}
+		
 	}
 	public void drawToTempScreen() {
 		
-		//g2.setColor(Color.black);
-		//g2.fillRect(0, 0, screenWidth, screenHeight);
-		
 		tileM.draw(g2);
-		
-		
-		entityList.add(player);
-		entityList.add(m1);
 		
 		for (int i = 0; i < projectile[1].length; i++) {
 			if (projectile[currentMap][i] != null) {
-				entityList.add(projectile[currentMap][i]);
+				
+				if (!entityList.contains(projectile[currentMap][i]) ) {
+					entityList.add(projectile[currentMap][i]);
+				}
+				
 			}
+		}
+		
+		for (int i = 0; i < fields[1].length; i++) {
+			if (fields[currentMap][i] != null) {
+				
+				if (!fieldsList.contains(fields[currentMap][i]) ) {
+					fieldsList.add(fields[currentMap][i]);
+				}
+				
+			}
+			
 		}
 		
 		// SORT
@@ -155,16 +183,27 @@ public class GamePanel extends JPanel implements Runnable {
 			@Override
 			public int compare(Entity e1, Entity e2) {
 				int result = Integer.compare(e1.worldY, e2.worldY);
-				return result;
+			return result;
 			}
 		});
+		
+		for (int i = 0; i < entityList.size(); i++) {
+			if (!entityList.get(i).alive) {
+				entityList.remove(i);
+			}
+		}
+		
+
+		for (int i = 0; i < fieldsList.size(); i++) {
+			fieldsList.get(i).draw(g2);
+		}
 		
 		// DRAW ENTITIES
 		for (int i = 0; i < entityList.size(); i++) {
 			entityList.get(i).draw(g2);
 		}
 		// EMPTY ENTITY LIST
-		entityList.clear();
+		//entityList.clear();
 		// DEBUG
 		if (keyH.debug==true) {
 			//long drawEnd = System.nanoTime();

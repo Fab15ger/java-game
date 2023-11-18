@@ -2,10 +2,13 @@ package entity;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.Iterator;
 
+import ELements.Fields;
 import main.GamePanel;
 import main.KeyHandler;
-import object.OBJ_Fireball;
+import object.OBJ_Energy_Dmg;
+import object.OBJ_DEATH;
 
 public class Player extends Entity{
 
@@ -13,6 +16,7 @@ public class Player extends Entity{
 	public final int screenX;
 	public final int screenY;
 	public int mx, my;
+	Fields f1;
 	
 	public Player(GamePanel gp, KeyHandler keyH) {
 		super(gp);
@@ -26,9 +30,29 @@ public class Player extends Entity{
 		delaySpeed = 0;
 		
 		setDefaultValues();
-		
-		projectile = new OBJ_Fireball(gp);
+		delay_hit = 120;
 		shotAvalableCounter = 30;
+		level = 125;
+		magic = 42;
+		
+		int f = 3;
+		
+		for (int i = 0; i < f; i++) {
+			for (int j = 0; j < f; j++) {
+				addField(11+i, 9+j);
+			}
+			
+		}
+
+	}
+	
+	public void addField(int x, int y) {
+		for (int i = 0; i < gp.fields[1].length; i++) {
+			if (gp.fields[gp.currentMap][i] == null) {
+				gp.fields[gp.currentMap][i] = f1 = new Fields(gp, x, y);
+				break;
+			}
+		}
 	}
 	
 	public void getPlayerImage() {		
@@ -50,20 +74,19 @@ public class Player extends Entity{
 }
 	
 	public void setDefaultValues() {
+		
 		solidArea.x = 1;
 		solidArea.y = 1;
 		solidArea.height = 46;
 		solidArea.width = 46;
-		
 
-		
 		worldX = 11*gp.tileSize;
 		worldY = 7*gp.tileSize;
 		
 		speed = 12;
 		
 		target = gp.m1;
-		projectile = new OBJ_Fireball(gp);		
+		attack_type = ATK_PHYSIC;
 	}
 	
 	public void update() {
@@ -121,37 +144,42 @@ public class Player extends Entity{
 			}
 		}
 		
-		if (gp.keyH.shootPressesd && !projectile.alive) {
+
+		
+		if (target != null) {
 			
+			counterHit ++;
+			
+			if (delay_hit <= counterHit) {
+
+				dmg_energy = new OBJ_Energy_Dmg(gp, worldX, worldY, direction, true, this, dx, dy, target, 80, ATK_ENERGY);
+				counterHit = 0;
+			
+			
+			for (int i = 0; i < gp.projectile[1].length; i++) {
+				if (gp.projectile[gp.currentMap][i] == null) {
+					gp.projectile[gp.currentMap][i] = dmg_energy;
+					break;
+				}
+			}
+		}
+		}
+		
+		if (gp.keyH.shootPressesd && target != null) {
 			gp.keyH.shootPressesd = false;
+			//projectile.subtractResource(this);
 			
-	        //double angle = 0;
-	        //int px = 0;
-	        //int py = 0;	        
-	        //mx = (target.worldX) + (gp.tileSize/2);
-	        //my = target.worldY + (gp.tileSize/2);
-	        //angle = Math.atan2(my - (worldY+ (gp.tileSize/2)), mx - (worldX+ (gp.tileSize/2)));                   
-	        //double dx = Math.cos(angle);
-	        //double dy = Math.sin(angle);
-			
-			
-			projectile.set(worldX, worldY, direction, true, this, dx, dy, target);
-			// SUBTRACT THIS COST (MANA, AMMO ETC.)
-			projectile.subtractResource(this);
-			
-			
+			projectile = new OBJ_DEATH(gp, worldX, worldY, direction, true, this, dx, dy, target, 18, ATK_DEATH);
+
 			// CHECK VACANCY
 			for (int i = 0; i < gp.projectile[1].length; i++) {
-				gp.projectile[gp.currentMap][i] = null;
-				gp.projectile[gp.currentMap][i] = projectile;
-				break;
-				
-			}
-
-			// ADD IT TO THE LIST
-			shotAvalableCounter --;			
+				//gp.projectile[gp.currentMap][i] = null;
+				if (gp.projectile[gp.currentMap][i] == null) {
+					gp.projectile[gp.currentMap][i] = projectile;
+					break;
+				}	
+			}		
 		}
-
 	}
 	
 	public void draw(Graphics2D g2) {

@@ -6,24 +6,12 @@ import main.GamePanel;
 
 public class Projectile extends Entity{
 	
-	Entity user;
+	public Entity user;
+	public int dmg;
 	
-	public Projectile(GamePanel gp) {
+	public Projectile(GamePanel gp,int worldX,int worldY,String direction, boolean alive, Entity user,double dx,double dy,Entity target, int dmg, int atk_type) {
 		super(gp);
 		
-	}
-	
-	public void set(int wordX, int worldY, String direction, boolean alive, Entity user, double dx, double dy, Entity alvo) {
-		
-		this.worldX = wordX;
-		this.worldY = worldY;
-		this.direction = direction;
-		this.alive = alive;
-		this.user = user;
-		this.life = this.maxLife;
-		this.dx = dx;
-		this.dy = dy;
-		this.target = alvo;
 	}
 	
 	boolean isCollision(Entity en) {
@@ -38,6 +26,24 @@ public class Projectile extends Entity{
 		return false;
 	}
 	
+	public void getImage() {
+		
+		if (attack_type == ATK_ENERGY) {
+			anim1 = setup("/efects/efect_energy_explosion_1", gp.tileSize, gp.tileSize);
+			anim2 = setup("/efects/efect_energy_explosion_2", gp.tileSize, gp.tileSize);
+			anim3 = setup("/efects/efect_energy_explosion_3", gp.tileSize, gp.tileSize);
+			anim4 = setup("/efects/efect_energy_explosion_4", gp.tileSize, gp.tileSize);
+			anim5 = setup("/efects/efect_energy_explosion_5", gp.tileSize, gp.tileSize);
+		}
+		if (attack_type == ATK_DEATH) {
+			anim1 = setup("/efects/death_bomb1", gp.tileSize, gp.tileSize);
+			anim2 = setup("/efects/death_bomb2", gp.tileSize, gp.tileSize);
+			anim3 = setup("/efects/death_bomb3", gp.tileSize, gp.tileSize);
+			anim4 = setup("/efects/death_bomb4", gp.tileSize, gp.tileSize);
+			anim5 = setup("/efects/death_bomb5", gp.tileSize, gp.tileSize);
+		}
+	}
+	
 	public void update() {
 
 		col = (worldX)/gp.tileSize;
@@ -49,9 +55,13 @@ public class Projectile extends Entity{
 		} else {
 			this.worldX = target.worldX;
 			this.worldY = target.worldY;
-			target.damageReceive(user);
+			
 			if (!explosion) {
-				target.life -= 30;
+				target.damageReceive(user);
+				target.life -= dmg;
+				System.out.println(dmg);
+				gp.player.atkNumber += 1;
+				//System.out.println(gp.player.atkNumber);
 			}
 			explosion = true;
 		}
@@ -63,7 +73,7 @@ public class Projectile extends Entity{
 		
 		if (explosion) {
 			spriteCounter ++;
-			if (spriteCounter > 6) {
+			if (spriteCounter > 3) {
 				if (spriteNum == 1) {
 					spriteNum = 2;
 				}
@@ -75,9 +85,14 @@ public class Projectile extends Entity{
 				else if (spriteNum == 4) {
 					spriteNum++;
 				}else if (spriteNum == 5) {
-					spriteNum=1;
+					//spriteNum=1;
 					explosion = false;
 					alive = false;
+					if (target.life <= 0) {
+						user.target = null;
+						
+					}
+					gp.entityList.remove(this);
 				}
 				spriteCounter = 0;
 			}
