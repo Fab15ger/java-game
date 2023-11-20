@@ -1,8 +1,7 @@
 package object;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
+import java.util.Random;
 
 import entity.Entity;
 import entity.Projectile;
@@ -12,19 +11,26 @@ public class OBJ_Energy_Dmg extends Projectile{
 
 	GamePanel gp;
 	
-	public OBJ_Energy_Dmg(GamePanel gp,int worldX,int worldY,String direction, boolean alive, Entity user,double dx,double dy,Entity target, int dmg, int atk_type) {
-		super(gp, worldX, worldY, direction, alive, user, dx, dy, target, dmg, atk_type);
+	public OBJ_Energy_Dmg(GamePanel gp,String direction, boolean alive, Entity user,double dx,double dy,Entity target, int dmgMax, int dmgMin, int atk_type) {
+		super(gp, direction, alive, user, dx, dy, target, dmgMax, dmgMin, atk_type);
 		this.gp = gp;
-		this.worldX = worldX;
-		this.worldY = worldY;
+		
+		this.target = target;
+		
+		this.user = user;
+		
+		this.worldX = user.worldX;
+		this.worldY = user.worldY;
+		
 		this.direction = direction;
 		this.alive = alive;
-		this.user = user;
+		
 		this.life = this.maxLife;
 		this.dx = dx;
 		this.dy = dy;
-		this.target = target;	
-		this.dmg = dmg;
+			
+		this.dmg = dmg(dmgMax, dmgMin);
+					
 		speed = 40;
 		maxLife = 180;
 		life = maxLife;
@@ -32,6 +38,12 @@ public class OBJ_Energy_Dmg extends Projectile{
 
 		alive = false;
 		getImage();
+	}
+	
+	public int dmg(int dmgMax, int dmgMin) {
+
+		Random number = new Random();		
+		return number.nextInt((int)dmgMax + 1 - (int)dmgMin) + (int)dmgMin;
 	}
 
 	public void draw(Graphics2D g2) {
@@ -43,6 +55,10 @@ public class OBJ_Energy_Dmg extends Projectile{
 		if (spriteNum == 3) {image = anim3;}
 		if (spriteNum == 4) {image = anim4;}
 		if (spriteNum == 5) {image = anim5;}
-		g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);					
+		
+		if (!explosion) {
+			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+		}
+							
 	}
 }

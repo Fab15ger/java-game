@@ -1,13 +1,10 @@
 	package main;
 import java.awt.Graphics2D;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -19,7 +16,6 @@ import ELements.Fields;
 import entity.Entity;
 import entity.Mob1;
 import entity.Player;
-import items.Item;
 import tile.TileManager;
 
 
@@ -63,7 +59,7 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	//public Rune_SD sd;
 	//public Item i1 = new Item(this);
-	public Mob1 m1 = new Mob1(this);
+	
 	//public Fields f1 = new Fields(this);
 
 	public Entity projectile[][] = new Entity[maxMap][200];
@@ -72,6 +68,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public ArrayList<Entity> entityList = new ArrayList<>();
 	public ArrayList<Fields> fieldsList = new ArrayList<>(); 
 	public Player player = new Player(this, keyH);
+	public Mob1 m1 = new Mob1(this);
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
 		this.setBackground(Color.black);
@@ -103,7 +100,7 @@ public class GamePanel extends JPanel implements Runnable {
 		long lastTime = System.nanoTime();
 		long currentTime = 0;
 		long timer = 0;
-		int drawCount = 0;
+		//int drawCount = 0;
 		
 		while (gameThread!=null) {
 			currentTime = System.nanoTime();
@@ -116,22 +113,17 @@ public class GamePanel extends JPanel implements Runnable {
 				drawToTempScreen(); // draw everything to the buffered image
 				drawToScreen(); // draw the buffered image to the screen
 				delta--;
-				drawCount++;
+				//drawCount++;
 			}
 			if (timer >= 1000000000) {
 				//System.out.println("FPS: " + drawCount);
 				//System.out.println("" + entityList.size());
-				drawCount = 0;
+				//drawCount = 0;
 				timer = 0;
 			}
 		}
 	}
 	public void update() {
-		//i1.update();
-		//f1.update();
-		m1.update();
-		m1.setAction();
-		player.update();
 		
 		for (int i = 0; i < projectile[1].length; i++) {
 			if (projectile[currentMap][i] != null) {
@@ -144,6 +136,10 @@ public class GamePanel extends JPanel implements Runnable {
 				
 			}
 		}
+		
+		player.update();
+		
+		m1.update();
 		
 		for (int i = 0; i < fields[1].length; i++) {			
 			if (fields[currentMap][i] != null) {				
@@ -212,18 +208,21 @@ public class GamePanel extends JPanel implements Runnable {
 			g2.setColor(Color.white);
 			g2.setFont(new Font("Arial", Font.PLAIN, 20));
 			int x = 10;
-			int y = 400;
+			int y = 40;
 			int lineHeight = 20;
 			
-			g2.drawString("WorldX: " + player.worldX, x, y); y += lineHeight;
-			g2.drawString("WorldY: " + player.worldY, x, y); y += lineHeight;
-			g2.drawString("Col: " + player.col, x, y); y += lineHeight;
-			g2.drawString("Row: " + player.row,x, y); y += lineHeight;
-			g2.drawString("Sd Col: " + player.projectile.col, x, y); y += lineHeight;
-			g2.drawString("sd Row: " + player.projectile.row,x, y); y += lineHeight;
+			g2.drawString("Life: " + player.life + "/" + player.maxLife, x, y); y += lineHeight;
+			g2.drawString("Mana: " + player.mana, x, y); y += lineHeight;
+			g2.drawString("Level: " + player.level, x, y); y += lineHeight;
+			//g2.drawString("WorldX: " + player.worldX, x, y); y += lineHeight;
+			//g2.drawString("WorldY: " + player.worldY, x, y); y += lineHeight;
+			//g2.drawString("Col: " + player.col, x, y); y += lineHeight;
+			//g2.drawString("Row: " + player.row,x, y); y += lineHeight;
+			//g2.drawString("Sd Col: " + player.projectile.col, x, y); y += lineHeight;
+			//g2.drawString("sd Row: " + player.projectile.row,x, y); y += lineHeight;
 			
-			g2.drawString("enemy Col: " + player.target.col, x, y); y += lineHeight;
-			g2.drawString("enemy Row: " + player.target.row,x, y); y += lineHeight;
+			//g2.drawString("enemy Col: " + player.target.col, x, y); y += lineHeight;
+			//g2.drawString("enemy Row: " + player.target.row,x, y); y += lineHeight;
 			//g2.drawString("Draw time: " + passed, 10, 380);
 			//System.out.println("Draw time: " + passed);
 		}

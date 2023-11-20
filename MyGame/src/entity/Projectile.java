@@ -7,11 +7,10 @@ import main.GamePanel;
 public class Projectile extends Entity{
 	
 	public Entity user;
-	public int dmg;
+	public int dmgMax, dmgMin, dmg;
 	
-	public Projectile(GamePanel gp,int worldX,int worldY,String direction, boolean alive, Entity user,double dx,double dy,Entity target, int dmg, int atk_type) {
+	public Projectile(GamePanel gp,String direction, boolean alive, Entity user,double dx,double dy,Entity target, int dmgMax, int dmgMin, int atk_type) {
 		super(gp);
-		
 	}
 	
 	boolean isCollision(Entity en) {
@@ -46,25 +45,19 @@ public class Projectile extends Entity{
 	
 	public void update() {
 
-		col = (worldX)/gp.tileSize;
-		row = (worldY)/gp.tileSize;		
-		
-		if (!isCollision(target)) {
-			worldX += speed * mira(target)[0];
-			worldY+= speed * mira(target)[1] ;
-		} else {
-			this.worldX = target.worldX;
-			this.worldY = target.worldY;
-			
-			if (!explosion) {
-				target.damageReceive(user);
-				target.life -= dmg;
-				System.out.println(dmg);
-				gp.player.atkNumber += 1;
-				//System.out.println(gp.player.atkNumber);
+			if (!isCollision(target)) {
+				worldX += speed * mira(target)[0];
+				worldY+= speed * mira(target)[1] ;
+			} else {
+				this.worldX = target.worldX;
+				this.worldY = target.worldY;
+				
+				if (!explosion) {
+					target.damageReceive(user);
+					target.life -= dmg;
+				}
+				explosion = true;
 			}
-			explosion = true;
-		}
 		
 		life -- ;
 		if (life <= 0) {
@@ -72,6 +65,9 @@ public class Projectile extends Entity{
 		}
 		
 		if (explosion) {
+			target.entityProj.add(this);
+			worldX = target.worldX;
+			worldY = target.worldY;
 			spriteCounter ++;
 			if (spriteCounter > 3) {
 				if (spriteNum == 1) {
@@ -85,7 +81,6 @@ public class Projectile extends Entity{
 				else if (spriteNum == 4) {
 					spriteNum++;
 				}else if (spriteNum == 5) {
-					//spriteNum=1;
 					explosion = false;
 					alive = false;
 					if (target.life <= 0) {

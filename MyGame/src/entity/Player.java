@@ -1,13 +1,12 @@
 package entity;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.util.Iterator;
 
 import ELements.Fields;
 import main.GamePanel;
 import main.KeyHandler;
-import object.OBJ_Energy_Dmg;
 import object.OBJ_DEATH;
 
 public class Player extends Entity{
@@ -20,6 +19,7 @@ public class Player extends Entity{
 	
 	public Player(GamePanel gp, KeyHandler keyH) {
 		super(gp);
+		getImagesEfects();
 		
 		this.gp = gp;
 		getPlayerImage();
@@ -28,21 +28,22 @@ public class Player extends Entity{
 		screenX = gp.screenWidth/2 - (gp.tileSize/2);
 		screenY = gp.screenHeight/2 - (gp.tileSize/2);
 		delaySpeed = 0;
-		
+
 		setDefaultValues();
 		delay_hit = 120;
-		shotAvalableCounter = 30;
-		level = 125;
-		magic = 42;
+
+		attack_type = ATK_ENERGY;
+
+		//target = gp.m1;
 		
-		int f = 3;
-		
-		for (int i = 0; i < f; i++) {
-			for (int j = 0; j < f; j++) {
-				addField(11+i, 9+j);
-			}
-			
-		}
+//		int f = 3;
+//		
+//		for (int i = 0; i < f; i++) {
+//			for (int j = 0; j < f; j++) {
+//				addField(11+i, 9+j);
+//			}
+//			
+//		}
 
 	}
 	
@@ -83,13 +84,52 @@ public class Player extends Entity{
 		worldX = 11*gp.tileSize;
 		worldY = 7*gp.tileSize;
 		
+		level = 18;
+		magic = 12;
+		maxLife = ((level-8) * 15) + 185;
+		maxMana = ((level*5))+50;
+		life = maxLife;
+		mana = maxMana;
+		life /= 2;
+		
 		speed = 12;
 		
 		target = gp.m1;
 		attack_type = ATK_PHYSIC;
+		
+		delay_heal = 120;
 	}
 	
 	public void update() {
+		
+		/// delays
+		if (ticks_heal < delay_heal) {
+			ticks_heal ++;
+		}
+		
+		if (target == null) {
+			for (int i = 0; i < gp.entityList.size(); i++) {
+				Entity p1 = gp.entityList.get(i);
+				if (p1 instanceof Mob1) {
+					target = p1;
+				}
+			}
+		}
+
+		atk(target);
+		
+		if (healing_animation) {
+			healAnimationDelay ++;
+			if (healAnimationDelay > 5) {
+				if (healing_spr == 1) {healing_spr ++;} 
+				if (healing_spr == 2) {healing_spr ++;}
+				else if (healing_spr == 3) {healing_spr ++;}
+				else if (healing_spr == 4) {healing_spr ++;}
+				else if (healing_spr == 5) {healing_spr ++;}
+				else if (healing_spr == 6) {healing_spr = 1;healing_animation = false;}	
+				healAnimationDelay = 0;
+			}
+		}
 		
 		col = (worldX)/gp.tileSize;
 		row = (worldY)/gp.tileSize;
@@ -144,36 +184,31 @@ public class Player extends Entity{
 			}
 		}
 		
-
 		
-		if (target != null) {
-			
-			counterHit ++;
-			
-			if (delay_hit <= counterHit) {
-
-				dmg_energy = new OBJ_Energy_Dmg(gp, worldX, worldY, direction, true, this, dx, dy, target, 80, ATK_ENERGY);
-				counterHit = 0;
-			
-			
-			for (int i = 0; i < gp.projectile[1].length; i++) {
-				if (gp.projectile[gp.currentMap][i] == null) {
-					gp.projectile[gp.currentMap][i] = dmg_energy;
-					break;
-				}
+		if (efectDmgReceive) {
+			spriteCounterBlood++;
+			if (spriteCounterBlood > 3) {
+				if (spriteNumBlood == 1) {spriteNumBlood++;}
+				else if (spriteNumBlood == 2) {spriteNumBlood++;}
+				else if (spriteNumBlood == 3) {spriteNumBlood++;}
+				else if (spriteNumBlood == 4) {spriteNumBlood++;}
+				else if (spriteNumBlood == 5) {spriteNumBlood=1;efectDmgReceive = false;}
+				spriteCounterBlood = 0;
 			}
-		}
+		}	
+		
+		
+		if (gp.keyH.healPressed) {
+			heal(level*2);
+			gp.keyH.healPressed = false;
 		}
 		
 		if (gp.keyH.shootPressesd && target != null) {
 			gp.keyH.shootPressesd = false;
-			//projectile.subtractResource(this);
-			
-			projectile = new OBJ_DEATH(gp, worldX, worldY, direction, true, this, dx, dy, target, 18, ATK_DEATH);
+			projectile = new OBJ_DEATH(gp, direction, true, this, dx, dy, target, 0, 0, ATK_DEATH);
 
 			// CHECK VACANCY
 			for (int i = 0; i < gp.projectile[1].length; i++) {
-				//gp.projectile[gp.currentMap][i] = null;
 				if (gp.projectile[gp.currentMap][i] == null) {
 					gp.projectile[gp.currentMap][i] = projectile;
 					break;
@@ -183,6 +218,9 @@ public class Player extends Entity{
 	}
 	
 	public void draw(Graphics2D g2) {
+		
+		
+		
 		BufferedImage image = null;
 		
 		switch (direction) {
@@ -249,7 +287,41 @@ public class Player extends Entity{
 	}
 			
 		g2.drawImage(image, screenX, screenY, null);
+		
+		if (alive) {
+			g2.setColor(Color.black);
+			g2.fillRect(screenX-1, ((screenY - gp.tileSize/2)-1), gp.tileSize+2, 10+2);
+			
+			double oneScale = (double)gp.tileSize/maxLife;
+			double hpBarValue = oneScale*life;
+			
+			g2.setColor(Color.green);
+			g2.fillRect(screenX, (screenY - gp.tileSize/2), (int) (hpBarValue), 10);
+		}
+		
+		if (healing_animation) {
+			if (healing_spr == 1) {image_effect_heal = heal_01;}
+			if (healing_spr == 2) {image_effect_heal = heal_02;}
+			if (healing_spr == 3) {image_effect_heal = heal_03;}
+			if (healing_spr == 4) {image_effect_heal = heal_04;}
+			if (healing_spr == 5) {image_effect_heal = heal_05;}
+			if (healing_spr == 6) {image_effect_heal = heal_06;}
+			g2.drawImage(image_effect_heal, screenX, screenY, gp.tileSize, gp.tileSize, null);
+		}
+		
+		if (efectDmgReceive) {
+			if (spriteNumBlood == 1) {image_efect_dmg = animBlood1;}
+			if (spriteNumBlood == 2) {image_efect_dmg = animBlood2;}
+			if (spriteNumBlood == 3) {image_efect_dmg = animBlood3;}
+			if (spriteNumBlood == 4) {image_efect_dmg = animBlood4;}
+			if (spriteNumBlood == 5) {image_efect_dmg = animBlood5;}
+			g2.drawImage(image_efect_dmg, screenX, screenY, gp.tileSize, gp.tileSize, null);
+		}
+		
+		for (int i = 0; i < entityProj.size(); i++) {
+			if (entityProj.get(i).explosion) {
+				g2.drawImage(entityProj.get(i).image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+			}
+		}
 	}
-
-
 }

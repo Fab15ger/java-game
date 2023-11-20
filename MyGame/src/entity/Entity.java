@@ -1,60 +1,77 @@
 package entity;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
 import main.GamePanel;
 import main.UtilityTool;
+import object.OBJ_Energy_Dmg;
 
 public class Entity {
 	
 	GamePanel gp;
-	public boolean collisionOn = false;
+	
 	public BufferedImage image, up1, up2, up3, down1, down2, down3, left1,left2, left3, right1, right2, right3;
-	public BufferedImage image_efect_dmg, anim1, anim2, anim3, anim4, anim5, animBlood1, animBlood2, animBlood3, animBlood4, animBlood5;
+	public BufferedImage image_efect_dmg, image_effect_heal, anim1, anim2, anim3, anim4, anim5, animBlood1, animBlood2, animBlood3, animBlood4, animBlood5;
+	public BufferedImage heal_01, heal_02, heal_03, heal_04, heal_05, heal_06;
+
+	public ArrayList<Entity> entityProj = new ArrayList<>();
+
+	public Rectangle solidArea = new Rectangle(48,48,48,48);
+	
+	
+	// STATES
+	public boolean collisionOn = false;
+	boolean attacking = false;
+	public boolean alive = true;
 	public int worldX;
 	public int worldY;
-	boolean attacking = false;
+	public double dx, dy;
+	public int mx, my;
+	public String direction = "down";
+	int col;
+	int row;
+	protected boolean explosion = false;
+	boolean efectDmgReceive = false;
+	boolean healing_animation = false;
+	int healing_spr = 1;
+	
+	// ATTRIBUTES
+	public Entity target;
+	public Projectile projectile;
+	public Projectile dmg_energy;
+	String name;
+	public int level;
+	public int maxLife;
+	public int life;
+	public int maxMana;
+	public int mana;
+	public int magic;
+	public int speed;
+	public int delaySpeed;
+	
+	// DELAYS
 	int spriteCounter = 0;
 	int spriteCounterBlood = 0;
 	public int spriteNum = 1;
 	public int spriteNumBlood = 1;
 	int standCounter;
-	public boolean alive = true;
-	public int maxLife;
-	public int life;
-	public int shotAvalableCounter = 0;
-	public double dx, dy;
-	public int mx, my;
-	public Entity target;
-	public Projectile projectile;
-	public Projectile dmg_energy;
-	String name;
+	public int actionLockCounter;
+	int healAnimationDelay = 0;
+	public int delay_hit = 120;
+	public int counterHit = 0;
+	int delay_heal = 120;
+	int ticks_heal;
 	int tempo = 0;
 	int tempoDelay;
-	public String direction = "down";
-	public int delaySpeed;
-	public int speed;
-	public int col;
-	public int row;
+	
+	//  TYPES
 	public String type;
-	public Rectangle solidArea = new Rectangle(48,48,48,48);
-	boolean explosion = false;
-	boolean efectDmgReceive = false;
-	public int delay_hit;
-	public int counterHit = 0;
-	public int level;
-	public int magic;
-	
-	public int actionLockCounter;
-	
-	public int atkNumber = 0;
-	
 	public int attack_type;
 	public int ATK_PHYSIC = 0;
 	public int ATK_FIRE = 1;
@@ -104,37 +121,34 @@ public class Entity {
 	
 	public void update() {
 		
-		spriteCounter++;
-		if (spriteCounter>=24) {
-			if (spriteNum==1) {
-				spriteNum++;
-			}else if (spriteNum==2) {
-				spriteNum =1;
+		if (ticks_heal < delay_heal) {
+			ticks_heal ++;
+		}
+		
+		if (healing_animation) {
+			healAnimationDelay ++;
+			if (healAnimationDelay > 5) {
+				if (healing_spr == 1) {healing_spr ++;} 
+				if (healing_spr == 2) {healing_spr ++;}
+				else if (healing_spr == 3) {healing_spr ++;}
+				else if (healing_spr == 4) {healing_spr ++;}
+				else if (healing_spr == 5) {healing_spr ++;}
+				else if (healing_spr == 6) {healing_spr = 1;healing_animation = false;}	
+				healAnimationDelay = 0;
 			}
-			spriteCounter=0;
 		}
 		
 		if (efectDmgReceive) {
-			
 			spriteCounterBlood++;
 			if (spriteCounterBlood > 6) {
-				if (spriteNumBlood == 1) {
-					spriteNumBlood = 2;
-				}
-				else if (spriteNumBlood == 2) {
-					spriteNumBlood++;
-				}else if (spriteNumBlood == 3) {
-					spriteNumBlood++;
-				}
-				else if (spriteNumBlood == 4) {
-					spriteNumBlood++;
-				}else if (spriteNumBlood == 5) {
-					spriteNumBlood=1;
-					efectDmgReceive = false;
-				}
+				if (spriteNumBlood == 1) {spriteNumBlood++;}
+				else if (spriteNumBlood == 2) {spriteNumBlood++;}
+				else if (spriteNumBlood == 3) {spriteNumBlood++;}
+				else if (spriteNumBlood == 4) {spriteNumBlood++;}
+				else if (spriteNumBlood == 5) {spriteNumBlood=1;efectDmgReceive = false;}
 				spriteCounterBlood = 0;
 			}
-		}
+		}		
 	}
 	
 	public void getImagesEfects() {
@@ -143,6 +157,39 @@ public class Entity {
 		animBlood3 = setup("/efects/receive_dmg3", gp.tileSize, gp.tileSize);
 		animBlood4 = setup("/efects/receive_dmg4", gp.tileSize, gp.tileSize);
 		animBlood5 = setup("/efects/receive_dmg5", gp.tileSize, gp.tileSize);
+		
+		heal_01 = setup("/efects/heal_anim_01", gp.tileSize, gp.tileSize);
+		heal_02 = setup("/efects/heal_anim_02", gp.tileSize, gp.tileSize);
+		heal_03 = setup("/efects/heal_anim_03", gp.tileSize, gp.tileSize);
+		heal_04 = setup("/efects/heal_anim_04", gp.tileSize, gp.tileSize);
+		heal_05 = setup("/efects/heal_anim_05", gp.tileSize, gp.tileSize);
+		heal_06 = setup("/efects/heal_anim_06", gp.tileSize, gp.tileSize);
+		
+	}
+	
+	public void heal(int amount) {
+			if (ticks_heal >= delay_heal) {
+				healing_animation = true;
+				life+= amount;		
+				if (life>maxLife) {
+					life=maxLife;
+				}
+				ticks_heal = 0;
+			}
+	}
+	
+	public void atk(Entity target) {
+			counterHit ++;
+			if (delay_hit <= counterHit && target != null) {
+				dmg_energy = new OBJ_Energy_Dmg(gp, direction, true, this, dx, dy, target, 168, 57, attack_type);
+				counterHit = 0;
+			for (int i = 0; i < gp.projectile[1].length; i++) {
+				if (gp.projectile[gp.currentMap][i] == null) {
+					gp.projectile[gp.currentMap][i] = dmg_energy;
+					break;
+				}
+			}
+		}
 	}
 	
 	public void damageReceive(Entity enemy) {
@@ -207,5 +254,30 @@ public class Entity {
 			if (spriteNumBlood == 5) {image_efect_dmg = animBlood5;}
 			g2.drawImage(image_efect_dmg, screenX, screenY, gp.tileSize, gp.tileSize, null);
 		}
+		
+		if (healing_animation) {
+			if (healing_spr == 1) {image_effect_heal = heal_01;}
+			if (healing_spr == 2) {image_effect_heal = heal_02;}
+			if (healing_spr == 3) {image_effect_heal = heal_03;}
+			if (healing_spr == 4) {image_effect_heal = heal_04;}
+			if (healing_spr == 5) {image_effect_heal = heal_05;}
+			if (healing_spr == 6) {image_effect_heal = heal_06;}
+			g2.drawImage(image_effect_heal, screenX, screenY, gp.tileSize, gp.tileSize, null);
+		}
+		
+		
+		for (int i = 0; i < entityProj.size(); i++) {
+			if (entityProj.get(i).explosion) {
+				g2.drawImage(entityProj.get(i).image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+			}
+		}
+		
+		
+//		if (spriteNum == 1) {image = anim1;}
+//		if (spriteNum == 2) {image = anim2;}
+//		if (spriteNum == 3) {image = anim3;}
+//		if (spriteNum == 4) {image = anim4;}
+//		if (spriteNum == 5) {image = anim5;}
+//		g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);	
 	}
 }

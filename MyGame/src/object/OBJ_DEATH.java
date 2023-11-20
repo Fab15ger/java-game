@@ -1,8 +1,6 @@
 package object;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.util.Random;
 
 
@@ -15,12 +13,12 @@ public class OBJ_DEATH extends Projectile{
 
 	GamePanel gp;
 	
-	public OBJ_DEATH(GamePanel gp,int worldX,int worldY,String direction, boolean alive, Entity user,double dx,double dy,Entity target, int dmg, int atk_type) {
-		super(gp, worldX, worldY, direction, alive, user, dx, dy, target, dmg, atk_type);
+	public OBJ_DEATH(GamePanel gp,String direction, boolean alive, Entity user,double dx,double dy,Entity target, int dmg, int dmgM, int atk_type) {
+		super(gp, direction, alive, user, dx, dy, target, dmg, dmgM, atk_type);
 		this.gp = gp;
 		
-		this.worldX = worldX;
-		this.worldY = worldY;
+		this.worldX = user.worldX;
+		this.worldY = user.worldY;
 		this.direction = direction;
 		this.alive = alive;
 		this.user = user;

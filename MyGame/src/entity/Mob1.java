@@ -3,32 +3,37 @@ package entity;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Random;
-import java.util.RandomAccess;
 
 import main.GamePanel;
 
 
-public class Mob1 extends Entity {
+public class Mob1 extends Entity {	
 	
 	GamePanel gp;
 	int countHeal = 0;
-
+	
 	public Mob1(GamePanel gp) {
+		
 		super(gp);
 		this.gp = gp;
+		
 		getImage();
 		getImagesEfects();
 		worldX = 12*gp.tileSize;
 		worldY = 7*gp.tileSize;
 		type = "Monster";
-		maxLife = 1200;
+		maxLife = 520;
 		life = maxLife;
+		
+		
+		attack_type = ATK_DEATH;
 		
 	}
 	
 	public void getImage() {		
 		down1 = setup("/player/orc1", gp.tileSize, gp.tileSize);
 }	
+
 	public void setAction() {
 			actionLockCounter++;
 			
@@ -57,23 +62,31 @@ public class Mob1 extends Entity {
 				actionLockCounter=0;
 			}
 		}
+
 	public void update() {
 		
+		super.update();
 		
-		if (life <= 300) {
-			Random r = new Random();
-			if (life > 0) {
-				countHeal++;
-				if (countHeal > 60) {
-					countHeal=0;
-					life += r.nextInt(1200)+200;
-					if (life>= maxLife) {
-						life = maxLife;
-					}
-				}
-				
-			}
 
+		if (target == null) {
+			for (int i = 0; i < gp.entityList.size(); i++) {
+				Entity p1 = gp.entityList.get(i);
+				if (p1 instanceof Player) {
+					target = p1;
+				}
+			}
+		}
+		
+		atk(target);
+		
+		if (ticks_heal < delay_heal) {
+			ticks_heal ++;
+		}
+		
+		if (life <= (int) (this.maxLife*0.8)) {
+			
+			Random r = new Random();
+			heal(r.nextInt(100)+100);
 		}
 		
 		if (life<=0) {
@@ -109,9 +122,6 @@ public class Mob1 extends Entity {
 		int screenX = worldX - gp.player.worldX + gp.player.screenX;
 		int screenY = worldY - gp.player.worldY + gp.player.screenY;
 		
-
-		
-		
 		if (alive) {
 			g2.setColor(Color.black);
 			g2.fillRect(screenX-1, ((screenY - gp.tileSize/2)-1), gp.tileSize+2, 10+2);
@@ -119,7 +129,6 @@ public class Mob1 extends Entity {
 			double oneScale = (double)gp.tileSize/maxLife;
 			double hpBarValue = oneScale*life;
 			
-			double p = (double)(life / maxLife);
 			g2.setColor(Color.green);
 			g2.fillRect(screenX, (screenY - gp.tileSize/2), (int) (hpBarValue), 10);
 		}
