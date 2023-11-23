@@ -1,6 +1,5 @@
 package tile;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,7 +7,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import javax.imageio.ImageIO;
-
 
 import main.GamePanel;
 import main.UtilityTool;
@@ -19,7 +17,8 @@ public class TileManager {
 	GamePanel gp;
 	public int mapTileNum[][][];
 	boolean drawPath = true;
-	
+	public int miniMapScreenSize = 50;
+
 	public TileManager(GamePanel gp) {
 		this.gp = gp;
 		
@@ -59,13 +58,13 @@ public class TileManager {
 		// WATER
 		setup(18, "018", false);
 		setup(19, "019", false);
-		setup(20, "020", true);//water
-		setup(21, "021", true);//water
-		setup(22, "022", true);//water
-		setup(23, "023", true);//water
-		setup(24, "024", true);//water
-		setup(25, "025", true);//water
-		setup(26, "026", true);//water
+		setup(20, "020", true);//water // true
+		setup(21, "021", true);//water // true
+		setup(22, "022", true);//water // true
+		setup(23, "023", true);//water // true
+		setup(24, "024", true);//water // true
+		setup(25, "025", true);//water // true
+		setup(26, "026", true);//water // true
 		setup(27, "027", true);//water
 		setup(28, "028", true);
 		setup(29, "029", true);

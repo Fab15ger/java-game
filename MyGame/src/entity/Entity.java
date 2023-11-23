@@ -34,8 +34,8 @@ public class Entity {
 	public double dx, dy;
 	public int mx, my;
 	public String direction = "down";
-	int col;
-	int row;
+	public int col;
+	public int row;
 	protected boolean explosion = false;
 	boolean efectDmgReceive = false;
 	boolean healing_animation = false;
@@ -66,7 +66,7 @@ public class Entity {
 	public int delay_hit = 120;
 	public int counterHit = 0;
 	int delay_heal = 120;
-	int ticks_heal;
+	int ticks_heal = 120;
 	int tempo = 0;
 	int tempoDelay;
 	
@@ -90,9 +90,7 @@ public class Entity {
 		
 		double[] coordinates = new double[2];
 		
-        double angle = 0;
-        int px = 0;
-        int py = 0;	        
+        double angle = 0;        
         mx = (alvo.worldX) + (gp.tileSize/2);
         my = alvo.worldY + (gp.tileSize/2);
         angle = Math.atan2(my - (worldY+ (gp.tileSize/2)), mx - (worldX+ (gp.tileSize/2)));                   
@@ -271,13 +269,5 @@ public class Entity {
 				g2.drawImage(entityProj.get(i).image, screenX, screenY, gp.tileSize, gp.tileSize, null);
 			}
 		}
-		
-		
-//		if (spriteNum == 1) {image = anim1;}
-//		if (spriteNum == 2) {image = anim2;}
-//		if (spriteNum == 3) {image = anim3;}
-//		if (spriteNum == 4) {image = anim4;}
-//		if (spriteNum == 5) {image = anim5;}
-//		g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);	
 	}
 }

@@ -17,6 +17,7 @@ public class Player extends Entity{
 	public int mx, my;
 	Fields f1;
 	
+	
 	public Player(GamePanel gp, KeyHandler keyH) {
 		super(gp);
 		getImagesEfects();
@@ -84,6 +85,9 @@ public class Player extends Entity{
 		worldX = 11*gp.tileSize;
 		worldY = 7*gp.tileSize;
 		
+		col = worldX/gp.tileSize;
+		row = worldY/gp.tileSize;
+		
 		level = 18;
 		magic = 12;
 		maxLife = ((level-8) * 15) + 185;
@@ -97,7 +101,7 @@ public class Player extends Entity{
 		target = gp.m1;
 		attack_type = ATK_PHYSIC;
 		
-		delay_heal = 120;
+		delay_heal = 60;
 	}
 	
 	public void update() {
@@ -115,8 +119,11 @@ public class Player extends Entity{
 				}
 			}
 		}
-
-		atk(target);
+		
+		if (target!=null) {
+			atk(target);
+		}
+		
 		
 		if (healing_animation) {
 			healAnimationDelay ++;
@@ -133,7 +140,11 @@ public class Player extends Entity{
 		
 		col = (worldX)/gp.tileSize;
 		row = (worldY)/gp.tileSize;
-
+		
+		if (delaySpeed < speed) {
+			delaySpeed++;
+		}
+		
 		if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed
 				|| keyH.nortWest || keyH.southWest || keyH.nortEast || keyH.southEast) {
 
@@ -150,20 +161,21 @@ public class Player extends Entity{
 			collisionOn = false;
 			gp.cChecker.checkTile(this);
 			
-			delaySpeed++;
+			
 			if (delaySpeed >= speed) {
 				if (collisionOn == false) {
 					switch(direction) {
-						case "up":worldY -= gp.tileSize; image = up1; break;
-						case "down":worldY += gp.tileSize; image = down1; break;
-						case "right":worldX += gp.tileSize; image = right1; break;
-						case "left":worldX -= gp.tileSize; image = left1; break;
+						case "up":if(worldY>0)worldY -= gp.tileSize; image = up1; break;
+						case "down":if(worldY<gp.worldHeight-gp.tileSize*2)worldY += gp.tileSize; image = down1; break;
+						case "right":if(worldX<gp.worldWidth-gp.tileSize*2)worldX += gp.tileSize; image = right1; break;
+						case "left":if(worldX>0)worldX -= gp.tileSize; image = left1; break;
 						case "nortwest": worldY -= gp.tileSize; worldX += gp.tileSize; image = right1; break;
 						case "norteast": worldY -= gp.tileSize; worldX -= gp.tileSize; image = left1; break;
 						case "southwest": worldY += gp.tileSize; worldX += gp.tileSize; image = right1; break;
 						case "southeast": worldY += gp.tileSize; worldX -= gp.tileSize; image = left1; break;	
 						
 					}
+					gp.miniMap.updateLocalMap();
 				}
 				delaySpeed=0;
 			}
@@ -204,9 +216,10 @@ public class Player extends Entity{
 		}
 		
 		if (gp.keyH.shootPressesd && target != null) {
+			
 			gp.keyH.shootPressesd = false;
 			projectile = new OBJ_DEATH(gp, direction, true, this, dx, dy, target, 0, 0, ATK_DEATH);
-
+			//gp.tileM.miniMapScreenSize -= 10;
 			// CHECK VACANCY
 			for (int i = 0; i < gp.projectile[1].length; i++) {
 				if (gp.projectile[gp.currentMap][i] == null) {

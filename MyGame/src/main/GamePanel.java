@@ -16,6 +16,7 @@ import ELements.Fields;
 import entity.Entity;
 import entity.Mob1;
 import entity.Player;
+import tile.MiniMap;
 import tile.TileManager;
 
 
@@ -23,6 +24,7 @@ import tile.TileManager;
 public class GamePanel extends JPanel implements Runnable {
 	
 	private static final long serialVersionUID = 1L;
+	
 	//SCREEN SETTINGS
 	final int originalTileSize = 16;
 	final int scale = 3;
@@ -56,11 +58,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public CollisionChecker cChecker = new CollisionChecker(this);
 	public TileManager tileM = new TileManager(this);
 	public KeyHandler keyH = new KeyHandler(this);
-	
-	//public Rune_SD sd;
-	//public Item i1 = new Item(this);
-	
-	//public Fields f1 = new Fields(this);
+	public MiniMap miniMap;
 
 	public Entity projectile[][] = new Entity[maxMap][200];
 	public Fields fields[][] = new Fields[maxMap][10];
@@ -69,6 +67,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public ArrayList<Fields> fieldsList = new ArrayList<>(); 
 	public Player player = new Player(this, keyH);
 	public Mob1 m1 = new Mob1(this);
+	
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
 		this.setBackground(Color.black);
@@ -78,8 +77,8 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		entityList.add(player);
 		entityList.add(m1);
+		miniMap = new MiniMap(this);
 	}
-	
 	// SETUP GAME
 	public void setupGame() {
 		
@@ -100,7 +99,7 @@ public class GamePanel extends JPanel implements Runnable {
 		long lastTime = System.nanoTime();
 		long currentTime = 0;
 		long timer = 0;
-		//int drawCount = 0;
+		int drawCount = 0;
 		
 		while (gameThread!=null) {
 			currentTime = System.nanoTime();
@@ -113,12 +112,12 @@ public class GamePanel extends JPanel implements Runnable {
 				drawToTempScreen(); // draw everything to the buffered image
 				drawToScreen(); // draw the buffered image to the screen
 				delta--;
-				//drawCount++;
+				drawCount++;
 			}
 			if (timer >= 1000000000) {
-				//System.out.println("FPS: " + drawCount);
+				System.out.println("FPS: " + drawCount);
 				//System.out.println("" + entityList.size());
-				//drawCount = 0;
+				drawCount = 0;
 				timer = 0;
 			}
 		}
@@ -149,8 +148,15 @@ public class GamePanel extends JPanel implements Runnable {
 		
 	}
 	public void drawToTempScreen() {
+		g2.setColor(Color.black);
+		g2.fillRect(0, 0, screenWidth, screenHeight);
 		
 		tileM.draw(g2);
+		try {
+			miniMap.drawMiniMap(g2);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		
 		for (int i = 0; i < projectile[1].length; i++) {
 			if (projectile[currentMap][i] != null) {
@@ -214,17 +220,7 @@ public class GamePanel extends JPanel implements Runnable {
 			g2.drawString("Life: " + player.life + "/" + player.maxLife, x, y); y += lineHeight;
 			g2.drawString("Mana: " + player.mana, x, y); y += lineHeight;
 			g2.drawString("Level: " + player.level, x, y); y += lineHeight;
-			//g2.drawString("WorldX: " + player.worldX, x, y); y += lineHeight;
-			//g2.drawString("WorldY: " + player.worldY, x, y); y += lineHeight;
-			//g2.drawString("Col: " + player.col, x, y); y += lineHeight;
-			//g2.drawString("Row: " + player.row,x, y); y += lineHeight;
-			//g2.drawString("Sd Col: " + player.projectile.col, x, y); y += lineHeight;
-			//g2.drawString("sd Row: " + player.projectile.row,x, y); y += lineHeight;
-			
-			//g2.drawString("enemy Col: " + player.target.col, x, y); y += lineHeight;
-			//g2.drawString("enemy Row: " + player.target.row,x, y); y += lineHeight;
-			//g2.drawString("Draw time: " + passed, 10, 380);
-			//System.out.println("Draw time: " + passed);
+
 		}
 		
 	}

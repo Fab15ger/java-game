@@ -27,7 +27,7 @@ public class OBJ_DEATH extends Projectile{
 		this.dy = dy;
 		this.target = target;
 		this.dmg = dmg(user);
-		speed = 40;
+		speed = 50;
 		maxLife = 180;
 		life = maxLife;
 		attack_type = atk_type;

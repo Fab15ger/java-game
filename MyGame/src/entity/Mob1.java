@@ -77,7 +77,10 @@ public class Mob1 extends Entity {
 			}
 		}
 		
-		atk(target);
+		if (alive) {
+			//atk(target);
+		}
+		
 		
 		if (ticks_heal < delay_heal) {
 			ticks_heal ++;
