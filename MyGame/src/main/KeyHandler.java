@@ -10,7 +10,8 @@ public class KeyHandler implements KeyListener {
 		this.gp = gp;
 	}
 	
-	public boolean upPressed, downPressed, leftPressed, rightPressed, nortWest,southWest, nortEast, southEast, shootPressesd,healPressed;
+	public boolean upPressed, downPressed, leftPressed, rightPressed, nortWest,southWest, nortEast, southEast,
+	shootPressesd,healPressed, zoomMaxPressed, zoomMinPressed, upScreenPressed, downScreenPressed, rightScreenPressed, leftScreenPressed;
 	
 	boolean debug = true;
 
@@ -35,6 +36,14 @@ public class KeyHandler implements KeyListener {
 		if (code == KeyEvent.VK_F7 || code == KeyEvent.VK_NUMPAD0) {healPressed = true;}
 		
 		if (code == KeyEvent.VK_C) {debug=true;}
+		
+		if (code == KeyEvent.VK_3) {upScreenPressed=true;}
+		if (code == KeyEvent.VK_4) {downScreenPressed=true;}
+		if (code == KeyEvent.VK_5) {leftScreenPressed=true;}
+		if (code == KeyEvent.VK_6) {rightScreenPressed=true;}
+		
+		if (code == KeyEvent.VK_1) {zoomMaxPressed=true;}
+		if (code == KeyEvent.VK_2) {zoomMinPressed=true;}
 	
 	}
 	

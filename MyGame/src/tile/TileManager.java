@@ -58,14 +58,14 @@ public class TileManager {
 		// WATER
 		setup(18, "018", false);
 		setup(19, "019", false);
-		setup(20, "020", true);//water // true
-		setup(21, "021", true);//water // true
-		setup(22, "022", true);//water // true
-		setup(23, "023", true);//water // true
-		setup(24, "024", true);//water // true
-		setup(25, "025", true);//water // true
-		setup(26, "026", true);//water // true
-		setup(27, "027", true);//water
+		setup(20, "020", false);//water // true
+		setup(21, "021", false);//water // true
+		setup(22, "022", false);//water // true
+		setup(23, "023", false);//water // true
+		setup(24, "024", false);//water // true
+		setup(25, "025", false);//water // true
+		setup(26, "026", false);//water // true
+		setup(27, "027", false);//water // true
 		setup(28, "028", true);
 		setup(29, "029", true);
 		setup(30, "030", true);

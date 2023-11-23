@@ -6,12 +6,27 @@ import main.GamePanel;
 
 
 public class MiniMap extends TileManager {
-
-	int a1 = 3458;
-	int b1 = 4567;
-	int at = a1;
 	
-	int[][] miniMapLocal = new int[20][12]; 
+	// 1, 2, 4, 5, 10
+	public int zoom = 4;
+	
+	public int posX = 0;
+	public int posY = 0;
+	
+	int numColuns = 10*zoom;
+	int numRows = 10*zoom;
+	int size = 20/zoom;
+	
+	int width = 200;
+	int height = 200;
+	int x = gp.screenWidth - width - 8;
+	int y = 8;
+	
+	int iX;
+	int iY;
+	
+	
+	int[][] miniMapLocal = new int[numColuns][numRows]; 
 
 	public MiniMap(GamePanel gp) {
 		super(gp);
@@ -19,35 +34,42 @@ public class MiniMap extends TileManager {
 		updateLocalMap();
 	}
 	
+	public void updateValues() {
+		numColuns = 10*zoom;
+		numRows = 10*zoom;
+		size = 20/zoom;
+	}
+	
 	public void updateLocalMap() {
 		
-		int iX = (gp.player.worldX/gp.tileSize) - (20/2);
-		int iY = (gp.player.worldY/gp.tileSize) - (12/2);
+		iX = (gp.player.worldX/gp.tileSize) - (numColuns/2);
+		iY = (gp.player.worldY/gp.tileSize) - (numRows/2);
 		
-		for (int i = 0; i < 20; i++) {	
-			for (int j = 0; j < 12; j++) {
-					miniMapLocal[i][j] = mapTileNum[gp.currentMap][i+iX][j+iY];
+		for (int i = 0; i < numColuns; i++) {	
+			for (int j = 0; j < numRows; j++) {
+				try {
+					miniMapLocal[i][j] = mapTileNum[gp.currentMap][(i+iX)+posX][(j+iY)+posY];
+					
+				} catch (Exception e) {
+					
+					miniMapLocal[i][j] = 0;
+					
+				}	
 			}
+		}
+		try {
+			miniMapLocal[(numColuns/2)+posX*-1][(numRows/2)+posY*-1] = 100;
+		}catch (Exception e) {
 		}
 	}
 	
 	public void drawMiniMap(Graphics2D g2) {
 		
-		int width = 200;
-		int height = 120;
-		int x = gp.screenWidth - width - 8;
-		int y = 8;
-		int size = 10;
+		//double scaleX = (double) (gp.worldWidth)/width;
+		//double scaleY = (double) (gp.worldHeight)/height;
 		
-		//double scaleX = (double) (gp.tileSize * gp.maxWorldCol)/width;
-		//double scaleY = (double) (gp.tileSize * gp.maxWorldCol)/height;
-		
-		int playerScreenX = (x+width/2);
-		int playerSscreenY = (y+height/2);
-		
-		
-		for (int i = 0; i < 20; i++) {
-			for (int j = 0; j < 12; j++) {
+		for (int i = 0; i < numColuns; i++) {
+			for (int j = 0; j < numRows; j++) {
 				
 				int screenX = (x+(i*size));
 				int screenY = (y+(j*size));
@@ -77,14 +99,12 @@ public class MiniMap extends TileManager {
 					g2.setColor(new Color(20, 150, 41));
 					g2.fillRect(screenX, screenY, size, size);
 				}
+				
+				//player				
 				if(miniMapLocal[i][j] == 100) {
-					g2.setColor(Color.yellow);
+					g2.setColor(new Color(255, 255, 0));
 					g2.fillRect(screenX, screenY, size, size);
 				}
-				
-				// player
-				g2.setColor(new Color(255, 255, 0));
-				g2.fillRect(playerScreenX, playerSscreenY, size, size);
 		}}
 	}
 }

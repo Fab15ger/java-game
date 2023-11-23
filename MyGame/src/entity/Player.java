@@ -106,6 +106,22 @@ public class Player extends Entity{
 	
 	public void update() {
 		
+		if (keyH.zoomMaxPressed || keyH.zoomMinPressed || keyH.rightScreenPressed || keyH.leftScreenPressed
+				|| keyH.upScreenPressed || keyH.downScreenPressed) {
+			
+			if (keyH.zoomMaxPressed) {keyH.zoomMaxPressed=false;gp.miniMap.zoom = 2;}
+			if (keyH.zoomMinPressed) {keyH.zoomMinPressed=false;gp.miniMap.zoom = 4;}
+			
+			if (keyH.leftScreenPressed) {keyH.leftScreenPressed=false;gp.miniMap.posX-=1;}
+			if (keyH.rightScreenPressed) {keyH.rightScreenPressed=false;gp.miniMap.posX+=1;}
+			
+			if (keyH.upScreenPressed) {keyH.upScreenPressed=false;gp.miniMap.posY-=1;}
+			if (keyH.downScreenPressed) {keyH.downScreenPressed=false; gp.miniMap.posY+=1;}
+				
+			gp.miniMap.updateValues();
+			gp.miniMap.updateLocalMap();
+		}
+		
 		/// delays
 		if (ticks_heal < delay_heal) {
 			ticks_heal ++;
@@ -120,7 +136,7 @@ public class Player extends Entity{
 			}
 		}
 		
-		if (target!=null) {
+		if (target!=null && target.alive) {
 			atk(target);
 		}
 		
