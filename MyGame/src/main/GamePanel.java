@@ -16,6 +16,7 @@ import ELements.Fields;
 import entity.Entity;
 import entity.Mob1;
 import entity.Player;
+import object.DmgArea;
 import tile.MiniMap;
 import tile.TileManager;
 
@@ -64,7 +65,8 @@ public class GamePanel extends JPanel implements Runnable {
 	public Fields fields[][] = new Fields[maxMap][10];
 	
 	public ArrayList<Entity> entityList = new ArrayList<>();
-	public ArrayList<Fields> fieldsList = new ArrayList<>(); 
+	public ArrayList<Fields> fieldsList = new ArrayList<>();
+	public ArrayList<DmgArea> dmgAreaList = new ArrayList<>();
 	public Player player = new Player(this, keyH);
 	public Mob1 m1 = new Mob1(this);
 	
@@ -145,6 +147,11 @@ public class GamePanel extends JPanel implements Runnable {
 				fields[currentMap][i].update();				
 			}
 		}
+		for (int i = 0; i < dmgAreaList.size(); i++) {
+			if (dmgAreaList.get(i) != null) {
+				dmgAreaList.get(i).update();
+			}
+		}
 		
 	}
 	public void drawToTempScreen() {
@@ -204,6 +211,13 @@ public class GamePanel extends JPanel implements Runnable {
 		for (int i = 0; i < entityList.size(); i++) {
 			entityList.get(i).draw(g2);
 		}
+		
+		for (int i = 0; i < dmgAreaList.size(); i++) {
+			//if (dmgAreaList.get(i) != null) {
+				dmgAreaList.get(i).draw(g2);
+			//}
+		}
+		
 		// EMPTY ENTITY LIST
 		//entityList.clear();
 		// DEBUG

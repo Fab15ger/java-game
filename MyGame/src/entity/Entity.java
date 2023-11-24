@@ -17,7 +17,9 @@ public class Entity {
 	GamePanel gp;
 	
 	public BufferedImage image, up1, up2, up3, down1, down2, down3, left1,left2, left3, right1, right2, right3;
-	public BufferedImage image_efect_dmg, image_effect_heal, anim1, anim2, anim3, anim4, anim5, animBlood1, animBlood2, animBlood3, animBlood4, animBlood5;
+	
+	public BufferedImage image_efect_dmg, image_effect_heal, anim1, anim2, anim3, anim4, anim5,anim6, anim7, anim8,
+	animBlood1, animBlood2, animBlood3, animBlood4, animBlood5;
 	public BufferedImage heal_01, heal_02, heal_03, heal_04, heal_05, heal_06;
 
 	public ArrayList<Entity> entityProj = new ArrayList<>();
@@ -106,14 +108,10 @@ public class Entity {
 	public BufferedImage setup(String imageName, int width, int height) {
 		UtilityTool uTool = new UtilityTool();
 		BufferedImage image = null;
-		
 		try {
 			image = ImageIO.read(getClass().getResourceAsStream(imageName + ".png"));
 			image = uTool.scaleImage(image, width, height);
-		} catch (IOException e) {
-			// TODO: handle exception
-		}
-		
+		} catch (IOException e) {}
 		return image;
 	}
 	

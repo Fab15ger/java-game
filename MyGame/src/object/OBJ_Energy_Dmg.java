@@ -55,6 +55,9 @@ public class OBJ_Energy_Dmg extends Projectile{
 		if (spriteNum == 3) {image = anim3;}
 		if (spriteNum == 4) {image = anim4;}
 		if (spriteNum == 5) {image = anim5;}
+		if (spriteNum == 6) {image = anim6;}
+		if (spriteNum == 7) {image = anim7;}
+		if (spriteNum == 8) {image = anim8;}
 		
 		if (!explosion) {
 			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);

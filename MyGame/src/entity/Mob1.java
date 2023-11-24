@@ -24,8 +24,7 @@ public class Mob1 extends Entity {
 		type = "Monster";
 		maxLife = 520;
 		life = maxLife;
-		
-		
+				
 		attack_type = ATK_DEATH;
 		
 	}
@@ -125,6 +124,8 @@ public class Mob1 extends Entity {
 		int screenX = worldX - gp.player.worldX + gp.player.screenX;
 		int screenY = worldY - gp.player.worldY + gp.player.screenY;
 		
+		int percHp = (life*100)/maxLife;
+		
 		if (alive) {
 			g2.setColor(Color.black);
 			g2.fillRect(screenX-1, ((screenY - gp.tileSize/2)-1), gp.tileSize+2, 10+2);
@@ -132,9 +133,20 @@ public class Mob1 extends Entity {
 			double oneScale = (double)gp.tileSize/maxLife;
 			double hpBarValue = oneScale*life;
 			
-			g2.setColor(Color.green);
+			if (percHp >= 80) {
+				g2.setColor(Color.green);
+			}
+			if (percHp < 80 && percHp > 30) {
+				g2.setColor(Color.yellow);
+			}
+			if (percHp <= 30) {
+				g2.setColor(Color.red);
+			}
+			
 			g2.fillRect(screenX, (screenY - gp.tileSize/2), (int) (hpBarValue), 10);
 		}
+		
+		
 		
 	}
 }

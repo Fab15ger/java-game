@@ -2,12 +2,19 @@ package entity;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.desktop.ScreenSleepEvent;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
+import java.util.Iterator;
+
+import javax.sound.sampled.Port;
 
 import ELements.Fields;
 import main.GamePanel;
 import main.KeyHandler;
+import object.DmgArea;
 import object.OBJ_DEATH;
+import object.OBJ_Energy_Dmg;
 
 public class Player extends Entity{
 
@@ -17,6 +24,19 @@ public class Player extends Entity{
 	public int mx, my;
 	Fields f1;
 	
+	public int[][] arr = {
+			{0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
+			{0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0},
+			{0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0},
+			{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+			{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+			{1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1},
+			{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+			{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+			{0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0},
+			{0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0},
+			{0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0}
+			};
 	
 	public Player(GamePanel gp, KeyHandler keyH) {
 		super(gp);
@@ -31,7 +51,7 @@ public class Player extends Entity{
 		delaySpeed = 0;
 
 		setDefaultValues();
-		delay_hit = 120;
+		delay_hit = 60;
 
 		attack_type = ATK_ENERGY;
 
@@ -45,6 +65,7 @@ public class Player extends Entity{
 //			}
 //			
 //		}
+		
 
 	}
 	
@@ -98,13 +119,24 @@ public class Player extends Entity{
 		
 		speed = 12;
 		
-		target = gp.m1;
+		target = gp.player;
 		attack_type = ATK_PHYSIC;
 		
 		delay_heal = 60;
 	}
-	
+		
 	public void update() {
+		
+		
+		
+		if (target == null) {
+			for (int i = 0; i < gp.entityList.size(); i++) {
+				Entity p1 = gp.entityList.get(i);
+				if (p1 instanceof Mob1) {
+					target = p1;
+				}
+			}
+		}
 		
 		if (keyH.zoomMaxPressed || keyH.zoomMinPressed || keyH.rightScreenPressed || keyH.leftScreenPressed
 				|| keyH.upScreenPressed || keyH.downScreenPressed) {
@@ -127,14 +159,7 @@ public class Player extends Entity{
 			ticks_heal ++;
 		}
 		
-		if (target == null) {
-			for (int i = 0; i < gp.entityList.size(); i++) {
-				Entity p1 = gp.entityList.get(i);
-				if (p1 instanceof Mob1) {
-					target = p1;
-				}
-			}
-		}
+
 		
 		if (target!=null && target.alive) {
 			atk(target);
@@ -227,16 +252,35 @@ public class Player extends Entity{
 		
 		
 		if (gp.keyH.healPressed) {
-			heal(level*2);
+			//heal(level*2);
 			gp.keyH.healPressed = false;
+			for (int i = 0; i < arr.length; i++) {	
+				for (int j = 0; j < arr.length; j++) {
+					try {
+						
+						int iX = (gp.player.worldX/gp.tileSize) - (arr.length/2);
+						int iY = (gp.player.worldY/gp.tileSize) - (arr.length/2);
+						
+						
+						if (arr[i][j] != 0) {
+							DmgArea da = new DmgArea(gp,ATK_FIRE, (i+iX)*gp.tileSize, (j+iY)*gp.tileSize, this);							
+							gp.dmgAreaList.add(da);
+						}
+						
+					} catch (Exception e) {
+						
+
+						
+					}	
+				}
+			}
 		}
 		
 		if (gp.keyH.shootPressesd && target != null) {
 			
 			gp.keyH.shootPressesd = false;
 			projectile = new OBJ_DEATH(gp, direction, true, this, dx, dy, target, 0, 0, ATK_DEATH);
-			//gp.tileM.miniMapScreenSize -= 10;
-			// CHECK VACANCY
+			 //CHECK VACANCY
 			for (int i = 0; i < gp.projectile[1].length; i++) {
 				if (gp.projectile[gp.currentMap][i] == null) {
 					gp.projectile[gp.currentMap][i] = projectile;
@@ -321,10 +365,20 @@ public class Player extends Entity{
 			g2.setColor(Color.black);
 			g2.fillRect(screenX-1, ((screenY - gp.tileSize/2)-1), gp.tileSize+2, 10+2);
 			
+			int percHp = (life*100)/maxLife;
+			
 			double oneScale = (double)gp.tileSize/maxLife;
 			double hpBarValue = oneScale*life;
 			
-			g2.setColor(Color.green);
+			if (percHp >= 80) {
+				g2.setColor(Color.green);
+			}
+			if (percHp < 80 && percHp > 30) {
+				g2.setColor(Color.yellow);
+			}
+			if (percHp <= 30) {
+				g2.setColor(Color.red);
+			}
 			g2.fillRect(screenX, (screenY - gp.tileSize/2), (int) (hpBarValue), 10);
 		}
 		
