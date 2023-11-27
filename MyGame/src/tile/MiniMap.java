@@ -9,7 +9,7 @@ public class MiniMap extends TileManager {
 	
 	// 1, 2, 4, 5, 10 
 	
-	public int zoom = 1;
+	public int zoom = 4;
 	
 	public int posX = 0;
 	public int posY = 0;

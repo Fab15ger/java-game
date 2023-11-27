@@ -23,7 +23,7 @@ public class Mob1 extends Entity {
 		worldX = 12*gp.tileSize;
 		worldY = 7*gp.tileSize;
 		name = "Orc";
-		type = "Monster";
+		type = "monster";
 		maxLife = 520;
 		life = maxLife;
 				
@@ -160,7 +160,7 @@ public class Mob1 extends Entity {
 			if (percHp < 10) {
 				g2.setColor(new Color(127, 0, 0));
 			}
-			
+			g2.drawString(name, screenX, (screenY - gp.tileSize/2)-10);
 			g2.fillRect(screenX, (screenY - gp.tileSize/2), (int) (hpBarValue), 5);
 		}	
 	}

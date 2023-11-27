@@ -1,5 +1,6 @@
 package controls;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 
 import main.GamePanel;
@@ -19,6 +20,7 @@ public class Button_Class {
 	public void use() {}
 	
 	public void draw(Graphics2D g2) {
+		g2.setColor(Color.white);
 		g2.drawString("\n"+name, x, y+height);	
 	}
 

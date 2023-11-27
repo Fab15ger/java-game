@@ -116,6 +116,7 @@ public class Player extends Entity{
 		col = worldX/gp.tileSize;
 		row = worldY/gp.tileSize;
 		
+		name = "ADM";
 		level = 18;
 		magic = 12;
 		maxLife = ((level-8) * 15) + 185;
@@ -136,6 +137,12 @@ public class Player extends Entity{
 	
 	public void update() {
 		
+		try {
+			if (!target.alive) {
+				target=null;
+			}
+		} catch (Exception e) {}
+		
 		
 		fireField_ticks++;
 		if (fireField_ticks >=  25) {
@@ -144,15 +151,6 @@ public class Player extends Entity{
 		}
 		
 		if (life<0) {life=0;}
-		
-		if (target == null) {
-			for (int i = 0; i < gp.entityList.size(); i++) {
-				Entity p1 = gp.entityList.get(i);
-				if (p1 instanceof Mob1) {
-					target = null;
-				}
-			}
-		}
 		
 		if (keyH.zoomMaxPressed || keyH.zoomMinPressed || keyH.rightScreenPressed || keyH.leftScreenPressed
 				|| keyH.upScreenPressed || keyH.downScreenPressed) {
@@ -410,6 +408,7 @@ public class Player extends Entity{
 			if (percHp < 10) {
 				g2.setColor(new Color(127, 0, 0));
 			}
+			g2.drawString(name, screenX, (screenY - gp.tileSize/2)-10);
 			g2.fillRect(screenX, (screenY - gp.tileSize/2), (int) (hpBarValue), 5);
 		}
 		
