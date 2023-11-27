@@ -36,7 +36,7 @@ public class DmgArea {
 	
 	int spriteCounter = 0;
 	
-	int poder = 350;
+	int poder;
 	
 	int time;
 	
@@ -50,6 +50,7 @@ public class DmgArea {
 		this.worldY = worldY;
 		this.attack_type = attack_type;
 		this.user = user;
+		this.poder = user.level*2 + user.magic*5;
 		getImage();
 	}
 	
@@ -117,7 +118,7 @@ public class DmgArea {
 				if (atual instanceof Mob1) {
 					if(isCollision(atual)) {
 						if (time<2d) {
-							atual.life-=poder;
+							((Mob1) atual).dmgReceive(user, poder);
 						}
 						
 					}

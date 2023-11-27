@@ -7,8 +7,9 @@ import main.GamePanel;
 
 public class MiniMap extends TileManager {
 	
-	// 1, 2, 4, 5, 10
-	public int zoom = 4;
+	// 1, 2, 4, 5, 10 
+	
+	public int zoom = 1;
 	
 	public int posX = 0;
 	public int posY = 0;
@@ -17,8 +18,8 @@ public class MiniMap extends TileManager {
 	int numRows = 10*zoom;
 	int size = 20/zoom;
 	
-	int width = 200;
-	int height = 200;
+	public int width = 200;
+	public int height = 200;
 	int x = gp.screenWidth - width - 8;
 	int y = 8;
 	
@@ -38,6 +39,7 @@ public class MiniMap extends TileManager {
 		numColuns = 10*zoom;
 		numRows = 10*zoom;
 		size = 20/zoom;
+		miniMapLocal = new int[numColuns][numRows]; 
 	}
 	
 	public void updateLocalMap() {
@@ -63,6 +65,13 @@ public class MiniMap extends TileManager {
 		}
 	}
 	
+	public void zoomMore() {
+
+		updateValues();
+		updateLocalMap();
+	}
+	
+	
 	public void drawMiniMap(Graphics2D g2) {
 		
 		//double scaleX = (double) (gp.worldWidth)/width;
@@ -86,12 +95,16 @@ public class MiniMap extends TileManager {
 				}
 				
 				//mato
-				if(miniMapLocal[i][j] == 18 || miniMapLocal[i][j] == 19
-						|| miniMapLocal[i][j] == 26 || miniMapLocal[i][j] == 24
+				if(miniMapLocal[i][j] == 18 || miniMapLocal[i][j] == 19) {
+						g2.setColor(new Color(20, 80, 200));
+						g2.fillRect(screenX, screenY, size, size);		
+				}
+				if(miniMapLocal[i][j] == 26 || miniMapLocal[i][j] == 24
 						|| miniMapLocal[i][j] == 21 || miniMapLocal[i][j] == 23
 						|| miniMapLocal[i][j] == 28 || miniMapLocal[i][j] == 29
 						|| miniMapLocal[i][j] == 30 || miniMapLocal[i][j] == 31) {
-					g2.setColor(new Color(20, 80, 200));
+					
+					g2.setColor(new Color(20, 150, 41));
 					g2.fillRect(screenX, screenY, size, size);
 				}
 				// arvore

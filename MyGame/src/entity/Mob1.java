@@ -19,18 +19,21 @@ public class Mob1 extends Entity {
 		
 		getImage();
 		getImagesEfects();
+		
 		worldX = 12*gp.tileSize;
 		worldY = 7*gp.tileSize;
+		name = "Orc";
 		type = "Monster";
 		maxLife = 520;
 		life = maxLife;
 				
-		attack_type = ATK_DEATH;
+		attack_type = ATK_FIRE;
 		
-	}
+	}	
 	
 	public void getImage() {		
 		down1 = setup("/player/orc1", gp.tileSize, gp.tileSize);
+		down2 = setup("/player/dead_orc", gp.tileSize, gp.tileSize);
 }	
 
 	public void setAction() {
@@ -62,6 +65,11 @@ public class Mob1 extends Entity {
 			}
 		}
 
+	public void dmgReceive(Entity user, int hitPoints) {
+		life-=hitPoints;
+		target = user;
+	}
+	
 	public void update() {
 		
 		super.update();
@@ -71,13 +79,13 @@ public class Mob1 extends Entity {
 			for (int i = 0; i < gp.entityList.size(); i++) {
 				Entity p1 = gp.entityList.get(i);
 				if (p1 instanceof Player) {
-					target = p1;
+					//target = p1;
 				}
 			}
 		}
 		
 		if (alive) {
-			//atk(target);
+			atk(target);
 		}
 		
 		
@@ -88,11 +96,12 @@ public class Mob1 extends Entity {
 		if (life <= (int) (this.maxLife*0.8)) {
 			
 			Random r = new Random();
-			heal(r.nextInt(100)+100);
+			heal(r.nextInt(100)+150);
 		}
 		
 		if (life<=0) {
 			alive = false;
+			down1 = down2;
 		};
 		
 		if (efectDmgReceive) {
@@ -128,25 +137,31 @@ public class Mob1 extends Entity {
 		
 		if (alive) {
 			g2.setColor(Color.black);
-			g2.fillRect(screenX-1, ((screenY - gp.tileSize/2)-1), gp.tileSize+2, 10+2);
+			g2.fillRect(screenX-1, ((screenY - gp.tileSize/2)-1), gp.tileSize+2, 5+2);
 			
 			double oneScale = (double)gp.tileSize/maxLife;
 			double hpBarValue = oneScale*life;
 			
-			if (percHp >= 80) {
-				g2.setColor(Color.green);
+			if (percHp >= 90) {
+				g2.setColor(new Color(40, 237, 40));
 			}
-			if (percHp < 80 && percHp > 30) {
-				g2.setColor(Color.yellow);
+			if (percHp < 90 && percHp >= 70) {
+				g2.setColor(new Color(120, 237, 10));
 			}
-			if (percHp <= 30) {
-				g2.setColor(Color.red);
+			if (percHp < 70 && percHp >= 50) {
+				g2.setColor(new Color(255, 255, 0));
+			}
+			if (percHp < 50 && percHp >= 40) {
+				g2.setColor(new Color(237, 170, 10));
+			}
+			if (percHp < 40 && percHp >= 10) {
+				g2.setColor(new Color(255, 	0, 0));
+			}
+			if (percHp < 10) {
+				g2.setColor(new Color(127, 0, 0));
 			}
 			
-			g2.fillRect(screenX, (screenY - gp.tileSize/2), (int) (hpBarValue), 10);
-		}
-		
-		
-		
+			g2.fillRect(screenX, (screenY - gp.tileSize/2), (int) (hpBarValue), 5);
+		}	
 	}
 }

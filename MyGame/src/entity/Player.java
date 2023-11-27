@@ -24,6 +24,10 @@ public class Player extends Entity{
 	public int mx, my;
 	Fields f1;
 	
+	BufferedImage cursorAtk;
+	
+
+	
 	public int[][] arr = {
 			{0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
 			{0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0},
@@ -57,14 +61,12 @@ public class Player extends Entity{
 
 		//target = gp.m1;
 		
-//		int f = 3;
-//		
-//		for (int i = 0; i < f; i++) {
-//			for (int j = 0; j < f; j++) {
-//				addField(11+i, 9+j);
-//			}
-//			
-//		}
+		int f = 7;
+		
+
+		addField(11, 9);
+			
+
 		
 
 	}
@@ -78,7 +80,10 @@ public class Player extends Entity{
 		}
 	}
 	
-	public void getPlayerImage() {		
+	public void getPlayerImage() {
+		
+		cursorAtk = setup("/efects/cursor_3", gp.tileSize, gp.tileSize);
+		
 		down1 = setup("/player/player_female_down1", gp.tileSize, gp.tileSize);
 		down2 = setup("/player/player_female_down2", gp.tileSize, gp.tileSize);
 		down3 = setup("/player/player_female_down3", gp.tileSize, gp.tileSize);
@@ -94,6 +99,8 @@ public class Player extends Entity{
 		up1 = setup("/player/player_female_up1", gp.tileSize, gp.tileSize);
 		up2 = setup("/player/player_female_up2", gp.tileSize, gp.tileSize);
 		up3 = setup("/player/player_female_up3", gp.tileSize, gp.tileSize);
+		
+		efectFireField_01 = setup("/efects/fire_field_1", gp.tileSize, gp.tileSize);
 }
 	
 	public void setDefaultValues() {
@@ -124,16 +131,25 @@ public class Player extends Entity{
 		
 		delay_heal = 60;
 	}
-		
+	
+	public void dmgReceive(Entity user, int hitPoints) {life-=hitPoints;}
+	
 	public void update() {
 		
 		
+		fireField_ticks++;
+		if (fireField_ticks >=  25) {
+			efectFireField = false;
+			fireField_ticks = 0;
+		}
+		
+		if (life<0) {life=0;}
 		
 		if (target == null) {
 			for (int i = 0; i < gp.entityList.size(); i++) {
 				Entity p1 = gp.entityList.get(i);
 				if (p1 instanceof Mob1) {
-					target = p1;
+					target = null;
 				}
 			}
 		}
@@ -294,7 +310,13 @@ public class Player extends Entity{
 		
 		
 		
+		
+		
 		BufferedImage image = null;
+		
+		if (target!=null) {
+			g2.drawImage(cursorAtk,target.worldX - gp.player.worldX + gp.player.screenX, target.worldY - gp.player.worldY + gp.player.screenY, gp.tileSize, gp.tileSize, null);
+		}
 		
 		switch (direction) {
 		case "up":
@@ -363,23 +385,32 @@ public class Player extends Entity{
 		
 		if (alive) {
 			g2.setColor(Color.black);
-			g2.fillRect(screenX-1, ((screenY - gp.tileSize/2)-1), gp.tileSize+2, 10+2);
+			g2.fillRect(screenX-1, ((screenY - gp.tileSize/2)-1), gp.tileSize+2, 5+2);
 			
 			int percHp = (life*100)/maxLife;
 			
 			double oneScale = (double)gp.tileSize/maxLife;
 			double hpBarValue = oneScale*life;
 			
-			if (percHp >= 80) {
-				g2.setColor(Color.green);
+			if (percHp >= 90) {
+				g2.setColor(new Color(40, 237, 40));
 			}
-			if (percHp < 80 && percHp > 30) {
-				g2.setColor(Color.yellow);
+			if (percHp < 90 && percHp >= 70) {
+				g2.setColor(new Color(120, 237, 10));
 			}
-			if (percHp <= 30) {
-				g2.setColor(Color.red);
+			if (percHp < 70 && percHp >= 50) {
+				g2.setColor(new Color(255, 255, 0));
 			}
-			g2.fillRect(screenX, (screenY - gp.tileSize/2), (int) (hpBarValue), 10);
+			if (percHp < 50 && percHp >= 40) {
+				g2.setColor(new Color(237, 170, 10));
+			}
+			if (percHp < 40 && percHp >= 10) {
+				g2.setColor(new Color(255, 	0, 0));
+			}
+			if (percHp < 10) {
+				g2.setColor(new Color(127, 0, 0));
+			}
+			g2.fillRect(screenX, (screenY - gp.tileSize/2), (int) (hpBarValue), 5);
 		}
 		
 		if (healing_animation) {
@@ -406,5 +437,11 @@ public class Player extends Entity{
 				g2.drawImage(entityProj.get(i).image, screenX, screenY, gp.tileSize, gp.tileSize, null);
 			}
 		}
+		if (efectFireField) {
+			image = efectFireField_01;
+			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+
+		}
+		
 	}
 }

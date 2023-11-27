@@ -68,8 +68,7 @@ public class Projectile extends Entity{
 				this.worldY = target.worldY;
 				
 				if (!explosion) {
-					target.damageReceive(user);
-					target.life -= dmg;
+					target.dmgReceive(user, dmg);
 				}
 				explosion = true;
 			}

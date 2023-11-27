@@ -1,5 +1,6 @@
 package entity;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -20,11 +21,11 @@ public class Entity {
 	
 	public BufferedImage image_efect_dmg, image_effect_heal, anim1, anim2, anim3, anim4, anim5,anim6, anim7, anim8,
 	animBlood1, animBlood2, animBlood3, animBlood4, animBlood5;
-	public BufferedImage heal_01, heal_02, heal_03, heal_04, heal_05, heal_06;
+	public BufferedImage heal_01, heal_02, heal_03, heal_04, heal_05, heal_06, efectFireField_01;
 
 	public ArrayList<Entity> entityProj = new ArrayList<>();
 
-	public Rectangle solidArea = new Rectangle(48,48,48,48);
+	public Rectangle solidArea = new Rectangle(0,0,48,48);
 	
 	
 	// STATES
@@ -43,11 +44,13 @@ public class Entity {
 	boolean healing_animation = false;
 	int healing_spr = 1;
 	
+	public boolean efectFireField = false;
+	
 	// ATTRIBUTES
 	public Entity target;
 	public Projectile projectile;
 	public Projectile dmg_energy;
-	String name;
+	public String name;
 	public int level;
 	public int maxLife;
 	public int life;
@@ -71,6 +74,7 @@ public class Entity {
 	int ticks_heal = 120;
 	int tempo = 0;
 	int tempoDelay;
+	int fireField_ticks = 0;
 	
 	//  TYPES
 	public String type;
@@ -85,9 +89,11 @@ public class Entity {
 
 	public Entity(GamePanel gp) {
 		this.gp = gp;
-		
+		name = "Base";
 	}
 
+
+	
 	public double[] mira(Entity alvo) {
 		
 		double[] coordinates = new double[2];
@@ -105,6 +111,8 @@ public class Entity {
         return coordinates;
 	}
 	
+	public void dmgReceive(Entity user, int hitPoints) {}
+	
 	public BufferedImage setup(String imageName, int width, int height) {
 		UtilityTool uTool = new UtilityTool();
 		BufferedImage image = null;
@@ -116,6 +124,18 @@ public class Entity {
 	}
 	
 	public void update() {
+		
+		if (target!= null) {
+			if (target.life<=0) {
+				target=null;
+			}
+		}
+		
+		fireField_ticks++;
+		if (fireField_ticks >=  90) {
+			efectFireField = false;
+			fireField_ticks = 0;
+		}
 		
 		if (ticks_heal < delay_heal) {
 			ticks_heal ++;
@@ -237,9 +257,9 @@ public class Entity {
 					break;
 				}
 
-			if (alive) {
+			//if (alive) {
 				g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
-			}
+			//}
 		}
 		
 		if (efectDmgReceive) {
@@ -266,6 +286,10 @@ public class Entity {
 			if (entityProj.get(i).explosion) {
 				g2.drawImage(entityProj.get(i).image, screenX, screenY, gp.tileSize, gp.tileSize, null);
 			}
+		}
+		if (efectFireField) {
+			image = efectFireField_01;
+			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);	
 		}
 	}
 }

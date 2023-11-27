@@ -1,10 +1,10 @@
 	package main;
 import java.awt.Graphics2D;
-
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -13,6 +13,11 @@ import java.awt.Graphics;
 import javax.swing.JPanel;
 
 import ELements.Fields;
+import controls.ButtonZoomMinMiniMap;
+import controls.Button_Class;
+import controls.ButtonsManager;
+import controls.Input;
+import controls.Pointer;
 import entity.Entity;
 import entity.Mob1;
 import entity.Player;
@@ -55,20 +60,26 @@ public class GamePanel extends JPanel implements Runnable {
 	private int FPS = 60;
 	
 	// SYSTEM
+	
 	Thread gameThread;
 	public CollisionChecker cChecker = new CollisionChecker(this);
 	public TileManager tileM = new TileManager(this);
 	public KeyHandler keyH = new KeyHandler(this);
+	public ButtonsManager mManager = new ButtonsManager(this);
+	
 	public MiniMap miniMap;
 
 	public Entity projectile[][] = new Entity[maxMap][200];
 	public Fields fields[][] = new Fields[maxMap][10];
 	
+	public ArrayList<Button_Class> buttonsList = new ArrayList<>();
 	public ArrayList<Entity> entityList = new ArrayList<>();
 	public ArrayList<Fields> fieldsList = new ArrayList<>();
 	public ArrayList<DmgArea> dmgAreaList = new ArrayList<>();
 	public Player player = new Player(this, keyH);
 	public Mob1 m1 = new Mob1(this);
+	public Pointer p = new Pointer(this);
+	public Input input = new Input(this);
 	
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -76,13 +87,18 @@ public class GamePanel extends JPanel implements Runnable {
 		this.setDoubleBuffered(true);
 		this.setFocusable(true);
 		this.addKeyListener(keyH);
+		this.addMouseListener(input);
+		this.addMouseMotionListener(input);
 		
 		entityList.add(player);
 		entityList.add(m1);
 		miniMap = new MiniMap(this);
+
 	}
 	// SETUP GAME
 	public void setupGame() {
+		
+		mManager.setter();
 		
 		tempScreen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
 		g2 = (Graphics2D)tempScreen.getGraphics();
@@ -117,7 +133,7 @@ public class GamePanel extends JPanel implements Runnable {
 				drawCount++;
 			}
 			if (timer >= 1000000000) {
-				System.out.println("FPS: " + drawCount);
+				//System.out.println("FPS: " + drawCount);
 				//System.out.println("" + entityList.size());
 				drawCount = 0;
 				timer = 0;
@@ -137,6 +153,8 @@ public class GamePanel extends JPanel implements Runnable {
 				
 			}
 		}
+		
+		p.update();
 		
 		player.update();
 		
@@ -159,11 +177,9 @@ public class GamePanel extends JPanel implements Runnable {
 		g2.fillRect(0, 0, screenWidth, screenHeight);
 		
 		tileM.draw(g2);
-		try {
-			miniMap.drawMiniMap(g2);
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
+		miniMap.drawMiniMap(g2);
+		p.draw(g2);
+		//btn.draw(g2);
 		
 		for (int i = 0; i < projectile[1].length; i++) {
 			if (projectile[currentMap][i] != null) {
@@ -186,15 +202,15 @@ public class GamePanel extends JPanel implements Runnable {
 			
 		}
 		
-		// SORT
-		Collections.sort(entityList, new Comparator<Entity>() {
-			
-			@Override
-			public int compare(Entity e1, Entity e2) {
-				int result = Integer.compare(e1.worldY, e2.worldY);
-			return result;
-			}
-		});
+//		// SORT
+//		Collections.sort(entityList, new Comparator<Entity>() {
+//			
+//			@Override
+//			public int compare(Entity e1, Entity e2) {
+//				int result = Integer.compare(e1.worldY, e2.worldY);
+//			return result;
+//			}
+//		});
 		
 		for (int i = 0; i < entityList.size(); i++) {
 			if (!entityList.get(i).alive) {
@@ -216,6 +232,10 @@ public class GamePanel extends JPanel implements Runnable {
 			//if (dmgAreaList.get(i) != null) {
 				dmgAreaList.get(i).draw(g2);
 			//}
+		}
+		
+		for (int i = 0; i < buttonsList.size(); i++) {
+			buttonsList.get(i).draw(g2);
 		}
 		
 		// EMPTY ENTITY LIST
