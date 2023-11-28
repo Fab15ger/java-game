@@ -10,8 +10,8 @@ import java.util.Iterator;
 import javax.sound.sampled.Port;
 
 import ELements.Fields;
+import controls.KeyHandler;
 import main.GamePanel;
-import main.KeyHandler;
 import object.DmgArea;
 import object.OBJ_DEATH;
 import object.OBJ_Energy_Dmg;
@@ -55,7 +55,6 @@ public class Player extends Entity{
 		delaySpeed = 0;
 
 		setDefaultValues();
-		delay_hit = 60;
 
 		attack_type = ATK_ENERGY;
 
@@ -63,11 +62,7 @@ public class Player extends Entity{
 		
 		int f = 7;
 		
-
 		addField(11, 9);
-			
-
-		
 
 	}
 	
@@ -110,20 +105,19 @@ public class Player extends Entity{
 		solidArea.height = 46;
 		solidArea.width = 46;
 
-		worldX = 11*gp.tileSize;
-		worldY = 7*gp.tileSize;
+		worldX = 125*gp.tileSize;
+		worldY = 125*gp.tileSize;
 		
 		col = worldX/gp.tileSize;
 		row = worldY/gp.tileSize;
 		
 		name = "ADM";
 		level = 18;
-		magic = 12;
+		magic = 25;
 		maxLife = ((level-8) * 15) + 185;
 		maxMana = ((level*5))+50;
 		life = maxLife;
 		mana = maxMana;
-		life /= 2;
 		
 		speed = 12;
 		
@@ -150,6 +144,10 @@ public class Player extends Entity{
 			fireField_ticks = 0;
 		}
 		
+		if (target!=null && target.alive) {
+			atk(target);
+		}
+		
 		if (life<0) {life=0;}
 		
 		if (keyH.zoomMaxPressed || keyH.zoomMinPressed || keyH.rightScreenPressed || keyH.leftScreenPressed
@@ -172,14 +170,7 @@ public class Player extends Entity{
 		if (ticks_heal < delay_heal) {
 			ticks_heal ++;
 		}
-		
 
-		
-		if (target!=null && target.alive) {
-			atk(target);
-		}
-		
-		
 		if (healing_animation) {
 			healAnimationDelay ++;
 			if (healAnimationDelay > 5) {
@@ -264,10 +255,15 @@ public class Player extends Entity{
 			}
 		}	
 		
-		
 		if (gp.keyH.healPressed) {
 			//heal(level*2);
 			gp.keyH.healPressed = false;
+			heal((int) ((maxLife) * 0.3));
+		}
+		
+		if (gp.keyH.wave5x5) {
+			//heal(level*2);
+			gp.keyH.wave5x5 = false;
 			for (int i = 0; i < arr.length; i++) {	
 				for (int j = 0; j < arr.length; j++) {
 					try {

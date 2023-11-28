@@ -17,7 +17,7 @@ public class ButtonScreenMoveRightMiniMap extends Button_Class {
 	}
 	
 	public void use() {
-		gp.miniMap.posX += 1;
+		gp.miniMap.posX += 4;
 		gp.miniMap.updateValues();
 		gp.miniMap.updateLocalMap();
 	}

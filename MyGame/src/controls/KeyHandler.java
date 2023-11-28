@@ -1,19 +1,22 @@
-package main;
+package controls;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import main.GamePanel;
+
 public class KeyHandler implements KeyListener {
 	GamePanel gp;
+	
+	public boolean debug = true;
+	
+	public boolean zoomMaxPressed, zoomMinPressed, rightScreenPressed, leftScreenPressed, upScreenPressed, downScreenPressed;
+	public boolean upPressed, downPressed, leftPressed, rightPressed, nortWest, southWest, nortEast, southEast;
+	public boolean healPressed, shootPressesd, wave5x5;
 	
 	public KeyHandler(GamePanel gp) {
 		this.gp = gp;
 	}
-	
-	public boolean upPressed, downPressed, leftPressed, rightPressed, nortWest,southWest, nortEast, southEast,
-	shootPressesd,healPressed, zoomMaxPressed, zoomMinPressed, upScreenPressed, downScreenPressed, rightScreenPressed, leftScreenPressed;
-	
-	boolean debug = true;
 
 	public void keyTyped(KeyEvent e) {}
 
@@ -32,8 +35,9 @@ public class KeyHandler implements KeyListener {
 		if (code == KeyEvent.VK_NUMPAD3) {southWest=true;}
 		if (code == KeyEvent.VK_NUMPAD1) {southEast=true;}
 		
+		if (code == KeyEvent.VK_F12) {wave5x5 = true;}
+		if (code == KeyEvent.VK_F7) {healPressed = true;}
 		if (code == KeyEvent.VK_F5 || code == KeyEvent.VK_NUMPAD5) {shootPressesd = true;}
-		if (code == KeyEvent.VK_F7 || code == KeyEvent.VK_NUMPAD0) {healPressed = true;}
 		
 		if (code == KeyEvent.VK_C) {debug=true;}
 		

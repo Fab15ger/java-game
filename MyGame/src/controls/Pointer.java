@@ -78,8 +78,13 @@ public class Pointer {
 	
 	public void clicked() {
 		if (isCollisionEntity(gp.m1)) {
-			System.out.println(gp.m1.name);
-			gp.player.target = gp.m1;
+			if (gp.player.target == gp.m1) {
+				gp.player.target = null;
+						} else {
+							gp.player.target = gp.m1;
+						}
+			
+			
 		}
 		
 		for (int i = 0; i < gp.buttonsList.size(); i++) {

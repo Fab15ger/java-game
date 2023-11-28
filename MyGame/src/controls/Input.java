@@ -1,10 +1,7 @@
 package controls;
 
-import java.awt.Graphics2D;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-
-import org.w3c.dom.events.MouseEvent;
 
 import main.GamePanel;
 
@@ -33,12 +30,10 @@ public class Input implements MouseListener, MouseMotionListener{
 	}
 
 	@Override
-	public void mouseEntered(java.awt.event.MouseEvent e) {
-	}
+	public void mouseEntered(java.awt.event.MouseEvent e) {}
 
 	@Override
-	public void mouseExited(java.awt.event.MouseEvent e) {
-	}
+	public void mouseExited(java.awt.event.MouseEvent e) {}
 
 	@Override
 	public void mouseDragged(java.awt.event.MouseEvent e) {

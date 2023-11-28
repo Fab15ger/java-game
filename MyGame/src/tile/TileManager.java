@@ -58,19 +58,21 @@ public class TileManager {
 		// WATER
 		setup(18, "018", false);
 		setup(19, "019", false);
-		setup(20, "020", false);//water // true
-		setup(21, "021", false);//water // true
-		setup(22, "022", false);//water // true
-		setup(23, "023", false);//water // true
-		setup(24, "024", false);//water // true
-		setup(25, "025", false);//water // true
-		setup(26, "026", false);//water // true
-		setup(27, "027", false);//water // true
+		setup(20, "020", true);//water // true
+		setup(21, "021", true);//water // true
+		setup(22, "022", true);//water // true
+		setup(23, "023", true);//water // true
+		setup(24, "024", true);//water // true
+		setup(25, "025", true);//water // true
+		setup(26, "026", true);//water // true
+		setup(27, "027", true);//water // true
 		setup(28, "028", true);
 		setup(29, "029", true);
 		setup(30, "030", true);
 		setup(31, "031", true);
 		setup(32, "032", true);// WALL
+		setup(34, "034", false);// WOOD FLOOR - PISO MADEIRA
+		setup(35, "035", true);// TABLE
 		
 		setup(40, "032", true);// WALL
 		setup(41, "016", false);//TREE
@@ -79,6 +81,9 @@ public class TileManager {
 		setup(44, "035", true);// TABLE
 		setup(36, "036", false);// LADDER - TOP
 		setup(37, "037", false);// LADDER - BOTTOM
+		
+		setup(46, "060", false);// WOOD FLOOR - PISO cinza claro
+		setup(47, "061", false);// WOOD FLOOR - PISO branco
 		
 		///setup(38, "050", true);// TERRAIN
 		///setup(39, "051", true);// TERRAIN
@@ -149,7 +154,11 @@ public class TileManager {
 					worldY  + gp.tileSize > gp.player.worldY - gp.player.screenY &&
 					worldY  - gp.tileSize < gp.player.worldY + gp.player.screenY
 					) {
+				try {
 				g2.drawImage(tile[tileNum].image, screenX,screenY,null);
+				}catch (Exception e) {
+					// TODO: handle exception
+				}
 			}
 			worldCol++;
 			if (worldCol == gp.maxWorldCol) {

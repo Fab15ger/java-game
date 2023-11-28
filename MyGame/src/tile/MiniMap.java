@@ -88,19 +88,30 @@ public class MiniMap extends TileManager {
 					g2.setColor(Color.black);
 					g2.fillRect(screenX, screenY, size, size);
 				}				
-				// agua
-				if(miniMapLocal[i][j] == 01 || miniMapLocal[i][j] == 02) {
+				// mato
+				if(miniMapLocal[i][j] == 01 || miniMapLocal[i][j] == 02
+					|| miniMapLocal[i][j] == 04 || miniMapLocal[i][j] == 05
+					|| miniMapLocal[i][j] == 06 || miniMapLocal[i][j] == 07
+					|| miniMapLocal[i][j] == 8 || miniMapLocal[i][j] == 9
+					|| miniMapLocal[i][j] == 10 || miniMapLocal[i][j] == 11
+					|| miniMapLocal[i][j] == 12 || miniMapLocal[i][j] == 13
+					|| miniMapLocal[i][j] == 14 || miniMapLocal[i][j] == 15
+																				
+						) {
 					g2.setColor(Color.green);
 					g2.fillRect(screenX, screenY, size, size);
 				}
 				
-				//mato
+				//agua
 				if(miniMapLocal[i][j] == 18 || miniMapLocal[i][j] == 19) {
 						g2.setColor(new Color(20, 80, 200));
 						g2.fillRect(screenX, screenY, size, size);		
 				}
-				if(miniMapLocal[i][j] == 26 || miniMapLocal[i][j] == 24
-						|| miniMapLocal[i][j] == 21 || miniMapLocal[i][j] == 23
+				if(miniMapLocal[i][j] == 26 || miniMapLocal[i][j] == 24 
+						|| miniMapLocal[i][j] == 20
+						|| miniMapLocal[i][j] == 21 || miniMapLocal[i][j] == 22
+						|| miniMapLocal[i][j] == 23
+								|| miniMapLocal[i][j] == 25 || miniMapLocal[i][j] == 27
 						|| miniMapLocal[i][j] == 28 || miniMapLocal[i][j] == 29
 						|| miniMapLocal[i][j] == 30 || miniMapLocal[i][j] == 31) {
 					
@@ -111,6 +122,25 @@ public class MiniMap extends TileManager {
 				if(miniMapLocal[i][j] == 16) {
 					g2.setColor(new Color(20, 150, 41));
 					g2.fillRect(screenX, screenY, size, size);
+				}
+				
+				//wall
+				if(miniMapLocal[i][j] == 32 || miniMapLocal[i][j] == 35) {
+						g2.setColor(Color.red);
+						g2.fillRect(screenX, screenY, size, size);		
+				}
+				
+				//chão
+				if(miniMapLocal[i][j] == 34 || miniMapLocal[i][j] == 03 || miniMapLocal[i][j] == 17
+						|| miniMapLocal[i][j] == 47 || miniMapLocal[i][j] == 46) {
+						g2.setColor(Color.GRAY);
+						g2.fillRect(screenX, screenY, size, size);		
+				}
+				
+				//escadas - rampas
+				if(miniMapLocal[i][j] == 36 || miniMapLocal[i][j] == 37) {
+						g2.setColor(Color.yellow);
+						g2.fillRect(screenX, screenY, size, size);		
 				}
 				
 				//player				

@@ -4,19 +4,16 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-
 import javax.swing.JPanel;
-
 import ELements.Fields;
-import controls.ButtonZoomMinMiniMap;
 import controls.Button_Class;
 import controls.ButtonsManager;
 import controls.Input;
+import controls.KeyHandler;
 import controls.Pointer;
 import entity.Entity;
 import entity.Mob1;
@@ -24,8 +21,6 @@ import entity.Player;
 import object.DmgArea;
 import tile.MiniMap;
 import tile.TileManager;
-
-
 
 public class GamePanel extends JPanel implements Runnable {
 	
@@ -66,7 +61,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public TileManager tileM = new TileManager(this);
 	public KeyHandler keyH = new KeyHandler(this);
 	public ButtonsManager mManager = new ButtonsManager(this);
-	
+	public Ui ui = new Ui(this);
 	public MiniMap miniMap;
 
 	public Entity projectile[][] = new Entity[maxMap][200];
@@ -93,7 +88,7 @@ public class GamePanel extends JPanel implements Runnable {
 		entityList.add(player);
 		entityList.add(m1);
 		miniMap = new MiniMap(this);
-
+		
 	}
 	// SETUP GAME
 	public void setupGame() {
@@ -117,7 +112,7 @@ public class GamePanel extends JPanel implements Runnable {
 		long lastTime = System.nanoTime();
 		long currentTime = 0;
 		long timer = 0;
-		int drawCount = 0;
+		//int drawCount = 0;
 		
 		while (gameThread!=null) {
 			currentTime = System.nanoTime();
@@ -130,16 +125,19 @@ public class GamePanel extends JPanel implements Runnable {
 				drawToTempScreen(); // draw everything to the buffered image
 				drawToScreen(); // draw the buffered image to the screen
 				delta--;
-				drawCount++;
+				//drawCount++;
 			}
 			if (timer >= 1000000000) {
 				//System.out.println("FPS: " + drawCount);
 				//System.out.println("" + entityList.size());
-				drawCount = 0;
+				//drawCount = 0;
 				timer = 0;
 			}
 		}
 	}
+	
+
+	
 	public void update() {
 		
 		for (int i = 0; i < projectile[1].length; i++) {
@@ -177,8 +175,9 @@ public class GamePanel extends JPanel implements Runnable {
 		g2.fillRect(0, 0, screenWidth, screenHeight);
 		
 		tileM.draw(g2);
-		miniMap.drawMiniMap(g2);
+		
 		p.draw(g2);
+		
 		//btn.draw(g2);
 		
 		for (int i = 0; i < projectile[1].length; i++) {
@@ -237,6 +236,9 @@ public class GamePanel extends JPanel implements Runnable {
 		for (int i = 0; i < buttonsList.size(); i++) {
 			buttonsList.get(i).draw(g2);
 		}
+		
+		miniMap.drawMiniMap(g2);
+		ui.draw(g2);
 		
 		// EMPTY ENTITY LIST
 		//entityList.clear();

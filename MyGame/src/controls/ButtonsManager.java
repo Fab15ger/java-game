@@ -20,12 +20,12 @@ public class ButtonsManager {
 		this.gp = gp;
 		x = gp.screenWidth-210;
 		y = 220;
-		bMax = new ButtonZoomMaxMiniMap(gp, x, y, 10, 10, "+");x+=20;
-		bMin = new ButtonZoomMinMiniMap(gp, x, y,10,10, "-");x+=20;
-		bLeft = new ButtonScreenMoveLeftMiniMap(gp, x, y,10,10, "<");x+=20;
-		bRight = new ButtonScreenMoveRightMiniMap(gp, x, y,10,10, ">");x+=20;
-		bUp = new ButtonScreenMoveUpMiniMap(gp, x, y,10,10, "A");x+=20;
-		bDown = new ButtonScreenMoveDownMiniMap(gp, x, y,10,10, "V");x+=20;
+		bMax = new ButtonZoomMaxMiniMap(gp, x, y, 16, 16, "+");x+=20;
+		bMin = new ButtonZoomMinMiniMap(gp, x, y,16,16, "-");x+=20;
+		bLeft = new ButtonScreenMoveLeftMiniMap(gp, x, y,16,16, "<");x+=20;
+		bRight = new ButtonScreenMoveRightMiniMap(gp, x, y,16,16, ">");x+=20;
+		bUp = new ButtonScreenMoveUpMiniMap(gp, x, y,16,16, "A");x+=20;
+		bDown = new ButtonScreenMoveDownMiniMap(gp, x, y,10,16, "V");x+=20;
 	}
 	
 

@@ -20,12 +20,13 @@ public class Mob1 extends Entity {
 		getImage();
 		getImagesEfects();
 		
-		worldX = 12*gp.tileSize;
-		worldY = 7*gp.tileSize;
+		worldX = 127*gp.tileSize;
+		worldY = 130*gp.tileSize;
 		name = "Orc";
 		type = "monster";
 		maxLife = 520;
 		life = maxLife;
+		delay_heal = 240;
 				
 		attack_type = ATK_FIRE;
 		
@@ -70,11 +71,7 @@ public class Mob1 extends Entity {
 		target = user;
 	}
 	
-	public void update() {
-		
-		super.update();
-		
-
+	public void verificTarget() {
 		if (target == null) {
 			for (int i = 0; i < gp.entityList.size(); i++) {
 				Entity p1 = gp.entityList.get(i);
@@ -83,20 +80,27 @@ public class Mob1 extends Entity {
 				}
 			}
 		}
-		
 		if (alive) {
 			atk(target);
 		}
+	}
+	
+	public void update() {
 		
+		super.update();
 		
+		verificTarget();
+
 		if (ticks_heal < delay_heal) {
 			ticks_heal ++;
 		}
 		
-		if (life <= (int) (this.maxLife*0.8)) {
+		if (life <= (int) (this.maxLife*0.99)) {
 			
 			Random r = new Random();
-			heal(r.nextInt(100)+150);
+			
+			int val = 100;
+			heal(r.nextInt(val)+1);
 		}
 		
 		if (life<=0) {
@@ -145,19 +149,19 @@ public class Mob1 extends Entity {
 			if (percHp >= 90) {
 				g2.setColor(new Color(40, 237, 40));
 			}
-			if (percHp < 90 && percHp >= 70) {
+			if (percHp < 90 && percHp >= 60) {
 				g2.setColor(new Color(120, 237, 10));
 			}
-			if (percHp < 70 && percHp >= 50) {
+			if (percHp < 60 && percHp >= 40) {
 				g2.setColor(new Color(255, 255, 0));
 			}
-			if (percHp < 50 && percHp >= 40) {
+			if (percHp < 40 && percHp >= 30) {
 				g2.setColor(new Color(237, 170, 10));
 			}
-			if (percHp < 40 && percHp >= 10) {
+			if (percHp < 30 && percHp >= 5) {
 				g2.setColor(new Color(255, 	0, 0));
 			}
-			if (percHp < 10) {
+			if (percHp < 5) {
 				g2.setColor(new Color(127, 0, 0));
 			}
 			g2.drawString(name, screenX, (screenY - gp.tileSize/2)-10);
